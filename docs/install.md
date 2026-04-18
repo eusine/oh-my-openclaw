@@ -12,6 +12,8 @@ If your main working surface is Telegram, read `docs/quickstart.md` and `docs/te
 - copy `scripts/*` into your workspace helper scripts directory
 - keep runtime artifacts under `.oh-my-openclaw/`
 
+If you are replacing an existing OMX-named live setup, do not hard-delete first. Archive the old surface, install the new one, then leave only the minimum compatibility shims you still need.
+
 This repo is meant to be copied into a real OpenClaw workspace. A bare git clone in an arbitrary directory is not the same thing as a live workspace install.
 
 ## Expected runtime directories
@@ -41,6 +43,19 @@ See `examples/AGENTS-snippet.md`.
 
 For a more complete OpenClaw placement guide, read `docs/openclaw-integration.md`.
 
+## Live cutover pattern
+
+The least-annoying migration pattern in a real workspace is:
+
+1. archive legacy `skills/omx-*`
+2. copy in the new workflow skills (`autopilot`, `deep-interview`, `ralph`, `ralplan`, `team`, `ultraqa`, `ultrawork`)
+3. install `scripts/dispatch-openclaw-turn.sh` and `scripts/oh-my-openclaw-state-doctor.sh`
+4. keep old entrypoints only as thin shims if your workspace still calls them
+5. create `.oh-my-openclaw/{state,context,plans,logs}`
+6. inspect old `.omx/state/` residue so stale markers do not confuse later resume logic
+
+This is the difference between a rename and an actual cutover.
+
 ## Smoke-test recommendation
 
 Do the smoke test in a disposable OpenClaw workspace or isolated profile, not just by `cd`-ing into a random clone and running `openclaw` there.
@@ -52,6 +67,7 @@ Good smoke test:
 - run `scripts/privacy-scan.sh`
 - run `bash -n` against the helper scripts
 - confirm OpenClaw sees the installed skills from the real workspace
+- if migrating a live OMX workspace, verify any old shim path forwards into the new scripts and does not still write fresh state under `.omx/`
 
 Bad smoke test:
 - clone this repo elsewhere

@@ -47,6 +47,7 @@ Keep the lineage explicit when you publish or announce the repo.
 - a migration of OMX workflow ideas into an OpenClaw-shaped public package
 - skill-first orchestration patterns for OpenClaw
 - minimal helper scripts for runtime state hygiene and local dispatch
+- a documented archive-plus-shim cutover path for replacing an older OMX-named live workspace
 
 ## What this repo is not
 
@@ -77,6 +78,8 @@ Keep the lineage explicit when you publish or announce the repo.
 ## Migration notes in one paragraph
 
 The public product name is **Oh My OpenClaw**, but the historical lineage still matters. Some older notes, discussions, and operating habits may still refer to **OMX**, `.omx/`, or **madmax** mode. In this repo, those older terms are documented rather than hidden.
+
+In a real workspace, the clean cutover pattern is not "rename everything and pray". Archive the old OMX surface, install the new workflow names, keep only thin compatibility shims where needed, and move live runtime state to `.oh-my-openclaw/`.
 
 ## Docs included
 
@@ -141,6 +144,6 @@ This repo contains the workflow layer, not necessarily every surrounding runtime
 
 ## Before publishing
 
-Run `scripts/privacy-scan.sh`, smoke-test the copied skills in a clean workspace, then replace `LICENSE` with the license you actually want to ship.
+Run `scripts/privacy-scan.sh` and smoke-test the copied skills in a clean workspace or isolated profile.
 
 Important: do the smoke test from a real OpenClaw workspace or isolated profile. A random clone directory by itself is not a meaningful install check.

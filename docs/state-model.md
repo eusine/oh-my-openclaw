@@ -20,3 +20,7 @@ Runtime state lives under `.oh-my-openclaw/`.
 ## Important caveat
 
 This repo documents the workflow state model, but the surrounding hook or keyword-detector implementation may live outside this repo in your own OpenClaw setup.
+
+## Migration caveat
+
+If you are cutting over from an older OMX-named workspace, treat top-level `.omx/state/*` files as legacy residue unless you have deliberately chosen to keep a bridge. Do not leave stale OMX markers in place and then wonder why resume logic feels haunted.
