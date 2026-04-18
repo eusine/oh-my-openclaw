@@ -12,6 +12,8 @@ If your main working surface is Telegram, read `docs/quickstart.md` and `docs/te
 - copy `scripts/*` into your workspace helper scripts directory
 - keep runtime artifacts under `.oh-my-openclaw/`
 
+This repo is meant to be copied into a real OpenClaw workspace. A bare git clone in an arbitrary directory is not the same thing as a live workspace install.
+
 ## Expected runtime directories
 
 ```bash
@@ -38,6 +40,23 @@ Add a short snippet to your workspace instructions so the assistant knows:
 See `examples/AGENTS-snippet.md`.
 
 For a more complete OpenClaw placement guide, read `docs/openclaw-integration.md`.
+
+## Smoke-test recommendation
+
+Do the smoke test in a disposable OpenClaw workspace or isolated profile, not just by `cd`-ing into a random clone and running `openclaw` there.
+
+Good smoke test:
+- copy the files into a clean workspace
+- create `.oh-my-openclaw/state`, `context`, `plans`, and `logs`
+- add the AGENTS snippet
+- run `scripts/privacy-scan.sh`
+- run `bash -n` against the helper scripts
+- confirm OpenClaw sees the installed skills from the real workspace
+
+Bad smoke test:
+- clone this repo elsewhere
+- run `openclaw status` from that directory
+- assume that means the repo is correctly installed
 
 ## Customizing your default markdown files
 

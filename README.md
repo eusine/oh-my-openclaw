@@ -135,3 +135,5 @@ This repo contains the workflow layer, not necessarily every surrounding runtime
 ## Before publishing
 
 Run `scripts/privacy-scan.sh`, smoke-test the copied skills in a clean workspace, then replace `LICENSE` with the license you actually want to ship.
+
+Important: do the smoke test from a real OpenClaw workspace or isolated profile. A random clone directory by itself is not a meaningful install check.

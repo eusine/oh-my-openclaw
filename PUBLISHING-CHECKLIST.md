@@ -10,6 +10,6 @@
 - [x] Add sanitized default markdown templates and editing guide
 - [x] Add a pre-publish privacy scan script
 - [ ] Choose a license
-- [ ] Smoke-test in a clean OpenClaw workspace
+- [ ] Smoke-test in a clean OpenClaw workspace or isolated profile, not just a random clone directory
 - [ ] Review wording for any remaining private/internal references
 - [ ] Initialize a dedicated git repo and push

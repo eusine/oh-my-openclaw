@@ -27,6 +27,7 @@ mkdir -p .oh-my-openclaw/logs
 - the runtime directories exist
 - your private markdown files are not being published accidentally
 - the assistant knows where workflow state should live
+- you tested from a real OpenClaw workspace or isolated profile, not just another current working directory
 
 ## Next reads
 
