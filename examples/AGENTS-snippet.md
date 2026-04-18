@@ -19,3 +19,7 @@ Persist workflow state under: `{workspace}/.oh-my-openclaw/state/`
 ### Optional profile term
 
 Use `autonomy` as the explicit maximum-autonomy profile name if your setup wants one.
+
+### Telegram-first note
+
+If your main working surface is Telegram, prefer natural-language workflow triggers and concise progress updates over command-heavy interaction.

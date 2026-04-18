@@ -4,6 +4,28 @@ A lightweight workflow harness for OpenClaw.
 
 Oh My OpenClaw packages a durable orchestration layer around common agent workflows like deep requirements interviews, consensus planning, persistent execution, parallel work, QA cycling, and multi-worker teams.
 
+## Telegram-first quickstart
+
+For many OpenClaw users, the real working surface is chat, often Telegram, not a local CLI.
+
+1. copy the skills and scripts from this repo into your OpenClaw workspace
+2. create the `.oh-my-openclaw/` runtime directories
+3. add the workflow snippet from `examples/AGENTS-snippet.md`
+4. start from chat with a natural request such as:
+   - "먼저 물어보고 시작해"
+   - "계획 먼저"
+   - "이거 끝까지 해봐"
+   - "병렬로 나눠서 처리해"
+
+Minimal shell setup:
+
+```bash
+mkdir -p .oh-my-openclaw/state
+mkdir -p .oh-my-openclaw/context
+mkdir -p .oh-my-openclaw/plans
+mkdir -p .oh-my-openclaw/logs
+```
+
 ## Lineage
 
 This project is not pretending to have appeared out of thin air.
@@ -52,12 +74,15 @@ The public product name is **Oh My OpenClaw**, but the historical lineage still 
 ## Docs included
 
 - `docs/overview.md`
+- `docs/quickstart.md`
 - `docs/workflows.md`
 - `docs/terminology.md`
 - `docs/state-model.md`
 - `docs/compatibility.md`
 - `docs/legacy-migration.md`
 - `docs/default-markdown-files.md`
+- `docs/openclaw-integration.md`
+- `docs/telegram-workflows.md`
 - `docs/private-vs-public.md`
 - `docs/install.md`
 
@@ -70,6 +95,11 @@ The public product name is **Oh My OpenClaw**, but the historical lineage still 
 - `templates/default-md/TOOLS.example.md`
 - `templates/default-md/HEARTBEAT.example.md`
 - `templates/default-md/IDENTITY.example.md`
+
+## Included examples
+
+- `examples/AGENTS-snippet.md`
+- `examples/telegram-prompts.md`
 
 ## Important caveat
 

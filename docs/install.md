@@ -4,6 +4,8 @@
 
 Use this repo as a clean workflow layer on top of an existing OpenClaw workspace.
 
+If your main working surface is Telegram, read `docs/quickstart.md` and `docs/telegram-workflows.md` before overthinking CLI setup.
+
 ## Suggested placement
 
 - copy `skills/*` into your workspace skill directory
@@ -34,6 +36,8 @@ Add a short snippet to your workspace instructions so the assistant knows:
 - when to resume an active workflow instead of restarting it
 
 See `examples/AGENTS-snippet.md`.
+
+For a more complete OpenClaw placement guide, read `docs/openclaw-integration.md`.
 
 ## Customizing your default markdown files
 

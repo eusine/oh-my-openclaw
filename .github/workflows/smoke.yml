@@ -38,9 +38,12 @@ jobs:
           allow = {
               Path('README.md'),
               Path('docs/overview.md'),
+              Path('docs/openclaw-integration.md'),
+              Path('docs/telegram-workflows.md'),
               Path('docs/terminology.md'),
               Path('docs/install.md'),
               Path('docs/legacy-migration.md'),
+              Path('examples/telegram-prompts.md'),
               Path('.github/workflows/smoke.yml'),
           }
           pattern = re.compile(r'\bOMX\b|omx-|\.omx/|madmax')
