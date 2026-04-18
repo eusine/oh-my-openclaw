@@ -18,7 +18,7 @@ UltraQA is a QA cycling workflow. It runs build and test commands, collects fail
 
 <Do_Not_Use_When>
 - Codebase has no test suite — provide a note and offer to write tests first
-- A single specific test failure needs debugging — use `waza-hunt` for root cause analysis
+- A single specific test failure needs debugging — use a root-cause investigation pass instead
 - Task is pure code generation with no testing component
 </Do_Not_Use_When>
 

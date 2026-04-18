@@ -17,10 +17,10 @@ Autopilot takes a brief product idea and autonomously handles the full lifecycle
 </Use_When>
 
 <Do_Not_Use_When>
-- User wants to explore options or brainstorm — use `waza-think` instead
+- User wants to explore options or brainstorm, use a lightweight thinking pass instead
 - User says "just explain", "draft only", or "what would you suggest" — respond conversationally
 - User wants a single focused code change — use `ralph` or delegate to an executor subagent
-- User wants to review or critique an existing plan — use `waza-check`
+- User wants to review or critique an existing plan, use a review pass instead
 - Task is a quick fix or small bug — use direct executor delegation
 </Do_Not_Use_When>
 
@@ -193,7 +193,7 @@ Why: Single focused fix, not a multi-phase project. Use direct executor delegati
 
 <Bad>
 User: "what are some good approaches for adding caching?"
-Why: Exploration/brainstorming request. Respond conversationally or use waza-think.
+Why: Exploration or brainstorming request. Respond conversationally or use a lightweight thinking pass.
 </Bad>
 </Examples>
 
