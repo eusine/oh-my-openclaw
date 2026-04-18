@@ -81,7 +81,9 @@ The public product name is **Oh My OpenClaw**, but the historical lineage still 
 - `docs/compatibility.md`
 - `docs/legacy-migration.md`
 - `docs/default-markdown-files.md`
+- `docs/openclaw-official-alignment.md`
 - `docs/openclaw-integration.md`
+- `docs/team-operating-model.md`
 - `docs/telegram-workflows.md`
 - `docs/private-vs-public.md`
 - `docs/install.md`
@@ -99,6 +101,7 @@ The public product name is **Oh My OpenClaw**, but the historical lineage still 
 ## Included examples
 
 - `examples/AGENTS-snippet.md`
+- `examples/team-prompts.md`
 - `examples/telegram-prompts.md`
 
 ## Important caveat

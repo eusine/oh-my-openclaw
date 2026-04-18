@@ -31,5 +31,7 @@ mkdir -p .oh-my-openclaw/logs
 ## Next reads
 
 - `docs/openclaw-integration.md`
+- `docs/openclaw-official-alignment.md`
+- `docs/team-operating-model.md`
 - `docs/telegram-workflows.md`
 - `examples/telegram-prompts.md`

@@ -44,6 +44,10 @@ The assistant should map those to the appropriate workflow rather than forcing c
 - user: "처음부터 끝까지 알아서"
 - assistant uses `autopilot`
 
+### Team execution
+- user: "이건 나눠서 병렬로 처리해"
+- assistant keeps the main Telegram chat as the leader surface and runs worker subagents in the background
+
 ## Good update style
 
 Prefer:
@@ -56,6 +60,7 @@ Avoid:
 - noisy play-by-play narration
 - repetitive "still working" messages
 - dumping internal state that the user did not ask for
+- forcing the user to micromanage detached worker ids
 
 ## Suggested choice prompts
 
@@ -86,6 +91,11 @@ Useful stop phrases include:
 - "취소"
 - "여기까지"
 - "계획만 남겨"
+
+## Team-specific expectation
+
+On Telegram, team execution should feel like one conversation with one coordinator.
+Workers run in the background and report back through the coordinator rather than turning the user chat into a swarm dashboard.
 
 ## Recommendation
 

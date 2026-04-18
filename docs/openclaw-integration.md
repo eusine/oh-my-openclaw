@@ -64,3 +64,14 @@ mkdir -p .oh-my-openclaw/logs
 - prefer concise chat updates over noisy status spam
 - design workflows for interruption and resume
 - treat Telegram as the main control surface when that matches real usage
+
+## Team execution alignment
+
+If you want the migration to feel real, align team execution with OpenClaw's official runtime model.
+
+- main session = orchestrator
+- subagents = workers
+- task records = ledger
+- hooks = auxiliary glue
+
+See `docs/openclaw-official-alignment.md` and `docs/team-operating-model.md`.

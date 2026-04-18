@@ -6,7 +6,7 @@ user-invocable: true
 ---
 
 <Purpose>
-Team orchestrates coordinated parallel execution using OpenClaw's native subagent model. It decomposes a task into partitions, spawns multiple worker subagents simultaneously, coordinates via a shared task manifest, and merges results when all workers complete.
+Team orchestrates coordinated parallel execution using OpenClaw's native subagent model. It decomposes a task into partitions, spawns multiple worker subagents with `sessions_spawn`, coordinates their progress, and merges results when all workers complete.
 
 Team is the right choice for large tasks where the work is naturally partitionable and multiple parallel owners can work without blocking each other.
 </Purpose>
@@ -31,11 +31,13 @@ Some tasks are genuinely large — implementing a full feature across multiple s
 </Why_This_Exists>
 
 <Execution_Policy>
-- Maximum 6 concurrent workers (constrained by `maxConcurrent=8` in openclaw config; reserve 2 for coordinator and verification)
+- Maximum 6 concurrent workers (constrained by `maxConcurrent=8` in OpenClaw config; reserve capacity for coordinator and verification)
 - Default worker count: 3 (adjust based on task decomposability)
 - Each worker owns a non-overlapping partition — no shared mutable state between workers
-- Coordinator (Hina/orchestrator) manages overall progress, does NOT do implementation work
-- Workers write status updates to shared state files; coordinator reads them
+- Coordinator (main session / orchestrator) manages overall progress and user-facing synthesis
+- Prefer OpenClaw-native subagent announces over polling loops; completion should come back to the requester channel automatically
+- Treat OpenClaw background tasks as the activity ledger, not as the primary team control plane
+- Use hooks only for lightweight lifecycle glue, not as the core team runtime
 - After all workers complete, coordinator runs a merge + verification pass
 - If a worker fails, coordinator reassigns its partition to another worker or handles directly
 </Execution_Policy>
@@ -118,13 +120,15 @@ Workers execute independently and write to `.oh-my-openclaw/state/team/{team-id}
 
 While workers are running, the coordinator:
 
-1. Periodically checks worker status files.
+1. Monitors subagent completion announces and inspects task/subagent state on-demand when intervention is needed.
 2. If a worker reports `failed`:
    - Read its error notes
    - Decide: reassign partition to another worker, or handle directly
    - Update the manifest and restart work on that partition
 3. If all workers report `complete` → proceed to Phase 4.
-4. If a worker is stuck (no status update for >5 minutes on a short task): check on it, restart if needed.
+4. If a worker is stuck on a short task, inspect the relevant subagent/task and restart if needed.
+
+For Telegram-first usage, the main chat remains the leader surface. Workers do not become their own persistent user-facing chats. They report back through OpenClaw's announce path and the coordinator rewrites updates in normal assistant voice.
 
 ## Phase 4: Merge and Integration Check
 
@@ -155,6 +159,14 @@ If issues are found: create targeted fix tasks and re-run the affected portion.
    - Integration check results
    - Verification outcomes
 
+## OpenClaw alignment notes
+
+- Use `sessions_spawn` for worker creation, because OpenClaw subagents are the native detached-work primitive.
+- Expect one completion announce per worker back to the requester path instead of building a custom HUD-first runtime.
+- Use `openclaw tasks` for audit, debugging, and cancellation when detached work misbehaves, not as a scheduler.
+- Use hooks for supporting automation only. Do not turn hooks into the main team execution surface.
+- On Telegram, prefer one leader chat plus background workers. Thread-bound persistent team UX is not the primary path there.
+
 </Steps>
 
 <State_Management>
@@ -171,7 +183,7 @@ On completion: archive to `.oh-my-openclaw/state/team/{team-id}/archive/`.
 <Tool_Usage>
 - Spawn architect subagent for Phase 1 decomposition
 - Spawn N worker subagents simultaneously for Phase 2 (parallel)
-- Read worker status files periodically during Phase 3 monitoring
+- Inspect tasks/subagent state on-demand during Phase 3 when debugging or intervening
 - Run bash commands for build and integration tests in Phase 4
 - Spawn parallel reviewer subagents for Phase 5 verification
 - Write state to `.oh-my-openclaw/state/team/` using file write tools

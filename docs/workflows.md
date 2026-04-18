@@ -15,6 +15,7 @@ Use when the task is clear and you want one persistent owner to keep iterating u
 ## autopilot
 
 Use when you want the full pipeline: expansion, planning, execution, QA, and validation.
+It may keep execution with one owner or fan out into `team` when the implementation phase is naturally partitionable.
 
 ## ultrawork
 
@@ -27,3 +28,14 @@ Use when implementation exists and you want build, lint, test, and fix cycles.
 ## team
 
 Use when the task can be decomposed across several coordinated workers.
+In OpenClaw terms, that means one leader session coordinating detached worker subagents and then merging the results.
+
+## Comparison
+
+| Workflow | Best when | Main pattern |
+|---|---|---|
+| `deep-interview` | the request is vague | clarify first |
+| `ralplan` | the plan is expensive to get wrong | deliberate before building |
+| `ralph` | one owner should keep pushing until done | persistent single-owner execution |
+| `team` | parallel workers genuinely help | leader + worker subagents |
+| `autopilot` | the whole lifecycle should be managed end to end | expansion -> planning -> execution -> QA -> validation |

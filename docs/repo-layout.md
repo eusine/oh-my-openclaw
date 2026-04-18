@@ -21,3 +21,5 @@ oh-my-openclaw/
 Keep runtime outputs outside version control under `.oh-my-openclaw/`.
 
 If Telegram is your main control surface, also keep short prompt examples under `examples/` so the intended interaction style stays obvious.
+
+If team orchestration is central to your migration, keep a dedicated operating-model doc as well so the repo explains not just the skills, but the runtime shape behind them.
