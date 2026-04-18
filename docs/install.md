@@ -23,6 +23,8 @@ mkdir -p .oh-my-openclaw/logs
 
 If you want a named maximum-autonomy lane, use an `autonomy` profile in your own OpenClaw setup.
 
+If your existing setup already uses the older `madmax` profile name, that is fine too. The important thing is the behavior, not pretending the old term never existed.
+
 ## Integration idea
 
 Add a short snippet to your workspace instructions so the assistant knows:

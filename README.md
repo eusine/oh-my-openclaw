@@ -4,9 +4,18 @@ A lightweight workflow harness for OpenClaw.
 
 Oh My OpenClaw packages a durable orchestration layer around common agent workflows like deep requirements interviews, consensus planning, persistent execution, parallel work, QA cycling, and multi-worker teams.
 
+## Lineage
+
+This project is not pretending to have appeared out of thin air.
+
+Oh My OpenClaw is an OpenClaw-native migration and cleanup of the earlier **OMX** workflow layer. The goal here is to preserve the useful workflow ideas, repackage them for OpenClaw, and make the public repo cleaner than the original private workspace it came from.
+
+If you share, fork, or announce this project, credit the original OMX author as part of that lineage.
+
 ## What this repo is
 
 - a public, cleaned-up extraction of the workflow layer
+- a migration of OMX workflow ideas into an OpenClaw-shaped public package
 - skill-first orchestration patterns for OpenClaw
 - minimal helper scripts for runtime state hygiene and local dispatch
 
@@ -36,6 +45,10 @@ Oh My OpenClaw packages a durable orchestration layer around common agent workfl
   logs/
 ```
 
+## Migration notes in one paragraph
+
+The public product name is **Oh My OpenClaw**, but the historical lineage still matters. Some older notes, discussions, and operating habits may still refer to **OMX**, `.omx/`, or **madmax** mode. In this repo, those older terms are documented rather than hidden.
+
 ## Docs included
 
 - `docs/overview.md`
@@ -60,6 +73,7 @@ This repo contains the workflow layer, not necessarily every surrounding runtime
 - legacy migration notes isolated to one document
 - sanitized state examples included
 - GitHub smoke check included
+- README documents OMX lineage and credit expectations
 
 ## Before publishing
 

@@ -16,17 +16,21 @@ jobs:
             bash -n "$file"
           done < <(find scripts -type f -name '*.sh' -print0)
 
-  legacy-branding-guard:
+  legacy-reference-guard:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Ensure legacy branding stays isolated
+      - name: Ensure legacy references stay intentional
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
           root = Path('.')
           allow = {
+              Path('README.md'),
+              Path('docs/overview.md'),
+              Path('docs/terminology.md'),
+              Path('docs/install.md'),
               Path('docs/legacy-migration.md'),
               Path('.github/workflows/smoke.yml'),
           }
