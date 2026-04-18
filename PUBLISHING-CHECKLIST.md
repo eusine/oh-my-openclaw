@@ -11,6 +11,6 @@
 - [x] Add a pre-publish privacy scan script
 - [x] Smoke-test in a clean OpenClaw workspace or isolated profile, not just a random clone directory
 - [x] Review wording for remaining private/internal references and keep only intentional lineage/privacy mentions
-- [ ] Choose a license
-- [ ] Replace the original-author credit placeholder with the real handle
+- [x] Choose a license
+- [x] Replace the original-author credit placeholder with publishable lineage wording
 - [ ] Initialize a dedicated git repo and push

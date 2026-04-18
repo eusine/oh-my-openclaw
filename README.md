@@ -34,12 +34,12 @@ Oh My OpenClaw is an OpenClaw-native migration and cleanup of the earlier **OMX*
 
 If you share, fork, or announce this project, credit the original OMX author as part of that lineage.
 
-## Credit note to finalize before publish
+## Credit note
 
-Replace the placeholder below with the real original-author handle before you publish or announce the repo.
+Keep the lineage explicit when you publish or announce the repo.
 
-- Original OMX lineage credit: `@ORIGINAL_AUTHOR_HANDLE`
-- Suggested wording: "Oh My OpenClaw is an OpenClaw-native migration of the earlier OMX workflow layer. Credit to @ORIGINAL_AUTHOR_HANDLE for the original lineage."
+- Suggested wording: "Oh My OpenClaw is an OpenClaw-native migration of the earlier OMX workflow layer. Credit to the original OMX author for the original lineage."
+- If you want a direct tag in README, release notes, or social posts, replace the wording above with the real original-author handle.
 
 ## What this repo is
 
