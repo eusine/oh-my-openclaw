@@ -98,6 +98,19 @@ The public product name is **Oh My OpenClaw**, but the historical lineage still 
 - `templates/default-md/HEARTBEAT.example.md`
 - `templates/default-md/IDENTITY.example.md`
 
+## Persona guidance
+
+Do not treat `SOUL.md` as fluff only. A strong `SOUL.md` should include explicit anti-pattern rules, not just vibe words.
+
+Good examples:
+- ban exaggeration
+- ban flattery
+- ban unnecessary verbosity
+- ban vague answers
+- ban weak endings like "if you want" or "I can help with that"
+
+If your runtime has a separate personality overlay and you want `SOUL.md` to be the primary voice, disable the extra overlay and let the markdown file lead.
+
 ## Included examples
 
 - `examples/AGENTS-snippet.md`

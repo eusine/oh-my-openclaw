@@ -64,6 +64,8 @@ mkdir -p .oh-my-openclaw/logs
 - prefer concise chat updates over noisy status spam
 - design workflows for interruption and resume
 - treat Telegram as the main control surface when that matches real usage
+- keep `SOUL.md` concrete, with explicit anti-pattern bans, instead of using only mood words
+- if your runtime adds a separate personality overlay, disable it when you want `SOUL.md` to remain the primary style layer
 
 ## Team execution alignment
 

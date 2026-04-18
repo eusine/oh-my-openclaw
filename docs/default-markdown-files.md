@@ -32,6 +32,16 @@ Put here:
 - rhythm
 - attitude
 - what kind of assistant you want to be
+- explicit anti-pattern bans for tone and phrasing
+
+Good examples of bans:
+- no exaggeration
+- no flattery
+- no unnecessary verbosity
+- no vague answers
+- no weak endings like "if you want" or "I can help with that"
+
+If your runtime also has a separate personality layer, disable it when you want `SOUL.md` to remain the primary voice.
 
 Do not put here:
 - private relationship history
