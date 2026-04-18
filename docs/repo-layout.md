@@ -7,6 +7,7 @@ oh-my-openclaw/
   docs/
   examples/
   scripts/
+  templates/
   skills/
     autopilot/
     deep-interview/

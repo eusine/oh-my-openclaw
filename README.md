@@ -57,8 +57,19 @@ The public product name is **Oh My OpenClaw**, but the historical lineage still 
 - `docs/state-model.md`
 - `docs/compatibility.md`
 - `docs/legacy-migration.md`
+- `docs/default-markdown-files.md`
 - `docs/private-vs-public.md`
 - `docs/install.md`
+
+## Included templates
+
+- `templates/default-md/AGENTS.example.md`
+- `templates/default-md/SOUL.example.md`
+- `templates/default-md/USER.example.md`
+- `templates/default-md/MEMORY.example.md`
+- `templates/default-md/TOOLS.example.md`
+- `templates/default-md/HEARTBEAT.example.md`
+- `templates/default-md/IDENTITY.example.md`
 
 ## Important caveat
 
@@ -77,4 +88,4 @@ This repo contains the workflow layer, not necessarily every surrounding runtime
 
 ## Before publishing
 
-Smoke-test the copied skills in a clean workspace, then replace `LICENSE` with the license you actually want to ship.
+Run `scripts/privacy-scan.sh`, smoke-test the copied skills in a clean workspace, then replace `LICENSE` with the license you actually want to ship.

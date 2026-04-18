@@ -16,6 +16,15 @@ jobs:
             bash -n "$file"
           done < <(find scripts -type f -name '*.sh' -print0)
 
+  privacy-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run privacy scan
+        run: |
+          chmod +x scripts/privacy-scan.sh
+          scripts/privacy-scan.sh .
+
   legacy-reference-guard:
     runs-on: ubuntu-latest
     steps:

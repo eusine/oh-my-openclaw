@@ -34,3 +34,9 @@ Add a short snippet to your workspace instructions so the assistant knows:
 - when to resume an active workflow instead of restarting it
 
 See `examples/AGENTS-snippet.md`.
+
+## Customizing your default markdown files
+
+Use the sanitized starter files in `templates/default-md/` and adapt them to your own workspace.
+
+Read `docs/default-markdown-files.md` before filling them in, especially if you plan to keep the repo public.

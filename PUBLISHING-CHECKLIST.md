@@ -7,6 +7,8 @@
 - [x] Add basic helper script verification (`bash -n`)
 - [x] Apply full public rebrand outside the legacy migration note
 - [x] Add GitHub Actions smoke check
+- [x] Add sanitized default markdown templates and editing guide
+- [x] Add a pre-publish privacy scan script
 - [ ] Choose a license
 - [ ] Smoke-test in a clean OpenClaw workspace
 - [ ] Review wording for any remaining private/internal references
