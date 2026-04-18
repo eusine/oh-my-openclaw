@@ -1,0 +1,51 @@
+name: smoke
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  bash-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify shell syntax
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            bash -n "$file"
+          done < <(find scripts -type f -name '*.sh' -print0)
+
+  legacy-branding-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure legacy branding stays isolated
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          root = Path('.')
+          allow = {
+              Path('docs/legacy-migration.md'),
+              Path('.github/workflows/smoke.yml'),
+          }
+          pattern = re.compile(r'\bOMX\b|omx-|\.omx/|madmax')
+          hits = []
+          for path in root.rglob('*'):
+              if not path.is_file():
+                  continue
+              rel = path.relative_to(root)
+              if rel in allow or '.git' in rel.parts:
+                  continue
+              try:
+                  text = path.read_text()
+              except Exception:
+                  continue
+              for lineno, line in enumerate(text.splitlines(), start=1):
+                  if pattern.search(line):
+                      hits.append(f'{rel}:{lineno}:{line}')
+          if hits:
+              print('\n'.join(hits))
+              raise SystemExit(1)
+          PY

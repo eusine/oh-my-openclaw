@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "watch_paths": [
+    ".oh-my-openclaw/state"
+  ],
+  "stale_threshold_hours": 48,
+  "notes": "Example only. Adapt this to your own runtime hook implementation."
+}

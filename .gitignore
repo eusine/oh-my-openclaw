@@ -1,0 +1,10 @@
+# runtime state
+.oh-my-openclaw/state/
+.oh-my-openclaw/logs/
+.oh-my-openclaw/context/
+.oh-my-openclaw/plans/
+
+# local editor cruft
+.DS_Store
+*.swp
+*.tmp

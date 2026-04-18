@@ -1,0 +1,21 @@
+{
+  "active": true,
+  "mode": "ralph",
+  "current_phase": "execution",
+  "iteration": 2,
+  "max_iterations": 20,
+  "started_at": "2026-01-01T00:00:00Z",
+  "updated_at": "2026-01-01T00:12:00Z",
+  "task_description": "Ship a clean README and docs set",
+  "acceptance_criteria": [
+    "README exists",
+    "docs exist",
+    "scripts pass syntax check"
+  ],
+  "completed_subtasks": [
+    "create README",
+    "create docs"
+  ],
+  "failed_attempts": {},
+  "context_snapshot_path": ".oh-my-openclaw/context/readme-docs-20260101T000000Z.md"
+}

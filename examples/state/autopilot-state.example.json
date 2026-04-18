@@ -1,0 +1,15 @@
+{
+  "active": true,
+  "mode": "autopilot",
+  "current_phase": "planning",
+  "started_at": "2026-01-01T00:00:00Z",
+  "updated_at": "2026-01-01T00:05:00Z",
+  "state": {
+    "slug": "example-task",
+    "context_snapshot_path": ".oh-my-openclaw/context/example-task-20260101T000000Z.md",
+    "qa_cycle": 0,
+    "max_qa_cycles": 5,
+    "validation_round": 0,
+    "max_validation_rounds": 3
+  }
+}
