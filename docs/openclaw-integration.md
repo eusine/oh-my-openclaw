@@ -2,6 +2,8 @@
 
 This repo is designed to sit on top of an existing OpenClaw workspace.
 
+For the concrete `openclaw.json` keys that make this integration real, read `docs/openclaw-config.md` too.
+
 ## Main idea
 
 Use OpenClaw as the runtime and messaging layer.

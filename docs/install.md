@@ -44,6 +44,7 @@ Add a short snippet to your workspace instructions so the assistant knows:
 See `examples/AGENTS-snippet.md`.
 
 For a more complete OpenClaw placement guide, read `docs/openclaw-integration.md`.
+For the runtime config keys that make the install actually behave that way, read `docs/openclaw-config.md`.
 
 ## Live cutover pattern
 

@@ -93,6 +93,7 @@ In a real workspace, the clean cutover pattern is not "rename everything and pra
 - `docs/default-markdown-files.md`
 - `docs/openclaw-official-alignment.md`
 - `docs/openclaw-integration.md`
+- `docs/openclaw-config.md`
 - `docs/team-operating-model.md`
 - `docs/telegram-workflows.md`
 - `docs/private-vs-public.md`
