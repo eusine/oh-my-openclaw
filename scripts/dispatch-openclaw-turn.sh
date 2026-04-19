@@ -8,8 +8,9 @@ usage() {
   cat >&2 <<'EOF'
 Usage: dispatch-openclaw-turn.sh [--force-autonomy] [--print-command] [--session-id ID] <message...>
 
-Dispatches a local OpenClaw turn. When the autonomy toggle is on, the command
-automatically runs through `--profile autonomy`.
+Dispatches a local OpenClaw turn. The workspace default posture is autonomy-on,
+so the command normally runs through `--profile autonomy` unless the toggle file
+explicitly disables it.
 EOF
   exit 64
 }
@@ -22,9 +23,12 @@ from pathlib import Path
 
 path = Path(sys.argv[1])
 if not path.exists():
-    raise SystemExit(1)
+    raise SystemExit(0)
 
-data = json.loads(path.read_text())
+try:
+    data = json.loads(path.read_text())
+except Exception:
+    raise SystemExit(0)
 raise SystemExit(0 if data.get("enabled") else 1)
 PY
 }

@@ -31,6 +31,8 @@ If you want a named maximum-autonomy lane, use an `autonomy` profile in your own
 
 If your existing setup already uses the older `madmax` profile name, that is fine too. The important thing is the behavior, not pretending the old term never existed.
 
+If you are migrating an OMX-descended setup where `madmax/full` was the normal baseline, keep that behavior as the default and treat `autonomy` as the live label for the same posture, not as a rare break-glass mode.
+
 ## Integration idea
 
 Add a short snippet to your workspace instructions so the assistant knows:

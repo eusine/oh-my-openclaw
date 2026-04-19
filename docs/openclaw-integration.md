@@ -66,6 +66,33 @@ mkdir -p .oh-my-openclaw/logs
 - treat Telegram as the main control surface when that matches real usage
 - keep `SOUL.md` concrete, with explicit anti-pattern bans, instead of using only mood words
 - if your runtime adds a separate personality overlay, disable it when you want `SOUL.md` to remain the primary style layer
+- if your `AGENTS.md` uses sectioned behavior bans, make compaction re-inject them too, not just startup/safety boilerplate
+
+## Compaction guardrails
+
+If you rely on `AGENTS.md` sections like `No "If You Want"` or `Adjacent Anti-Patterns`, make sure post-compaction reinjection includes them.
+
+A practical OpenClaw config pattern is:
+
+```json
+{
+  "agents": {
+    "defaults": {
+      "compaction": {
+        "mode": "safeguard",
+        "postCompactionSections": [
+          "Session Startup",
+          "No \"If You Want\"",
+          "Adjacent Anti-Patterns",
+          "Red Lines"
+        ]
+      }
+    }
+  }
+}
+```
+
+Otherwise the assistant can recover the session with startup/safety context while losing the sharper anti-pattern bans that actually shape the tone.
 
 ## Team execution alignment
 
