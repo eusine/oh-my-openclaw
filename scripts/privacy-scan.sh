@@ -19,7 +19,6 @@ exclude_globs=(
   '!.git'
   '!node_modules'
   '!dist'
-  '!archive'
   '!scripts/privacy-scan.sh'
   '!.github/workflows/smoke.yml'
 )

@@ -15,7 +15,9 @@
 ## Minimal setup shell
 
 ```bash
-mkdir -p .oh-my-openclaw/state
+mkdir -p .oh-my-openclaw/state/questions
+mkdir -p .oh-my-openclaw/state/question-obligations
+mkdir -p .oh-my-openclaw/state/sessions
 mkdir -p .oh-my-openclaw/context
 mkdir -p .oh-my-openclaw/plans
 mkdir -p .oh-my-openclaw/logs
@@ -24,7 +26,7 @@ mkdir -p .oh-my-openclaw/logs
 ## Sanity checks
 
 - the skills exist in your workspace
-- the runtime directories exist
+- the runtime directories exist, including `.oh-my-openclaw/state/questions/` for blocking-question records and `.oh-my-openclaw/state/question-obligations/` for fail-closed required-question ledgers
 - your private markdown files are not being published accidentally
 - the assistant knows where workflow state should live
 - you tested from a real OpenClaw workspace or isolated profile, not just another current working directory
@@ -36,4 +38,5 @@ mkdir -p .oh-my-openclaw/logs
 - `docs/openclaw-official-alignment.md`
 - `docs/team-operating-model.md`
 - `docs/telegram-workflows.md`
+- `docs/release-imports-v0.14.0.md`
 - `examples/telegram-prompts.md`

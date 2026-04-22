@@ -16,6 +16,26 @@ jobs:
             bash -n "$file"
           done < <(find scripts -type f -name '*.sh' -print0)
 
+  helper-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify helper files exist and basic CLIs respond
+        run: |
+          set -euo pipefail
+          test -f scripts/evolver-safe.sh
+          test -f scripts/evolver-safe-preload.cjs
+          python3 scripts/action-first-guard.py
+          python3 scripts/oh-my-openclaw-question.py --help >/dev/null
+          python3 scripts/oh-my-openclaw-run-outcome.py --help >/dev/null
+          python3 scripts/oh-my-openclaw-triage.py --help >/dev/null
+          if python3 scripts/oh-my-openclaw-question.py --root "$RUNNER_TEMP/questions" ask --question-id ../bad hello >/dev/null 2>&1; then
+            echo 'question helper accepted an invalid path-like id'
+            exit 1
+          fi
+          python3 scripts/oh-my-openclaw-triage.py --state-root "$RUNNER_TEMP/triage-state" record --turn-id smoke-1 --no-suppress-followup "계획 먼저" > "$RUNNER_TEMP/triage.json"
+          grep -q '"suppress_followup": false' "$RUNNER_TEMP/triage.json"
+
   privacy-scan:
     runs-on: ubuntu-latest
     steps:
@@ -24,6 +44,14 @@ jobs:
         run: |
           chmod +x scripts/privacy-scan.sh
           scripts/privacy-scan.sh .
+
+  action-first-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify action-first guidance surfaces
+        run: |
+          python3 scripts/action-first-guard.py
 
   legacy-reference-guard:
     runs-on: ubuntu-latest
@@ -39,11 +67,16 @@ jobs:
               Path('README.md'),
               Path('docs/overview.md'),
               Path('docs/openclaw-integration.md'),
+              Path('docs/openclaw-config.md'),
+              Path('docs/openclaw-skill-self-evolution-mvp.md'),
+              Path('docs/release-imports-v0.14.0.md'),
+              Path('docs/state-model.md'),
               Path('docs/telegram-workflows.md'),
               Path('docs/terminology.md'),
               Path('docs/install.md'),
               Path('docs/legacy-migration.md'),
               Path('examples/telegram-prompts.md'),
+              Path('scripts/oh-my-openclaw-state-doctor.sh'),
               Path('.github/workflows/smoke.yml'),
           }
           pattern = re.compile(r'\bOMX\b|omx-|\.omx/|madmax')

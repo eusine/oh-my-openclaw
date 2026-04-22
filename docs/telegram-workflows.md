@@ -13,6 +13,7 @@ That means the workflow layer should optimize for:
 - low-noise updates
 - simple branching choices
 - clear completion messages
+- explicit blocking-question state when the agent truly needs an answer before proceeding
 
 ## Natural-language entrypoints
 
@@ -31,6 +32,7 @@ The assistant should map those to the appropriate workflow rather than forcing c
 ### Clarify first
 - user: "이 기능 좀 제대로 만들어줘"
 - assistant uses `deep-interview`
+- if the next move truly depends on a human answer, the workflow should mint a question record under `.oh-my-openclaw/state/questions/` and carry that question id through the chat turn
 
 ### Plan first
 - user: "이건 크니까 계획 먼저"
@@ -83,6 +85,19 @@ A Telegram user should be able to say things like:
 
 The workflow layer should treat these as first-class resume patterns, not as unusual edge cases.
 
+## Blocking-question pattern
+
+When a workflow cannot safely continue without input:
+- create a question record with `scripts/oh-my-openclaw-question.py ask ...`
+- let required questions mint a linked obligation record under `.oh-my-openclaw/state/question-obligations/`
+- ask one question, not a bundle
+- include the question id in the user-facing prompt
+- on reply, write the answer back with `... answer <question_id> ...`
+- after the workflow actually consumes the answer, mark the obligation satisfied with `... satisfy-obligation <obligation_id> ...`
+- before stopping or handing off, check `... obligation-blockers ...` so a required answer does not get dropped on the floor just because it was answered in chat
+
+This is the closest OpenClaw-native equivalent to OMX's owned `question` surface.
+
 ## Stop and redirect patterns
 
 Useful stop phrases include:
@@ -100,3 +115,7 @@ Workers run in the background and report back through the coordinator rather tha
 ## Recommendation
 
 If you want Oh My OpenClaw to feel more like OMX in practice, improve the Telegram interaction loop before building fancy status surfaces.
+
+## Advisory routing hints
+
+If your Telegram surface accepts broad natural-language starts, you can run `scripts/oh-my-openclaw-triage.py classify ...` or `record ...` as a lightweight hint before choosing a workflow. Keep it advisory. Do not treat it as magic intent reading.

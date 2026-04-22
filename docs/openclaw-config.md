@@ -114,7 +114,7 @@ If your recall stack depends on a local embedding server, keep that explicit too
         "enabled": true,
         "provider": "openai",
         "remote": {
-          "baseUrl": "http://127.0.0.1:8100/v1",
+          "baseUrl": "http://localhost:8100/v1",
           "apiKey": "llamacpp-local"
         }
       }
@@ -123,7 +123,7 @@ If your recall stack depends on a local embedding server, keep that explicit too
 }
 ```
 
-For this workspace, the intended embedding lane is `GTE Qwen2` on `127.0.0.1:8100`, not legacy `embeddinggemma` assumptions.
+Keep the endpoint and model naming aligned with your actual local embedding lane, and avoid carrying stale assumptions from an older setup.
 
 ## Practical merge pattern
 
@@ -146,6 +146,16 @@ openclaw config get agents.defaults.embeddedHarness.fallback
 openclaw config get plugins.entries.codex.config.appServer.approvalPolicy
 openclaw config get plugins.entries.codex.config.appServer.sandbox
 ```
+
+## Advisory routing and question state
+
+The new `oh-my-openclaw` helper scripts do not require a special OpenClaw config key, but your runtime wiring should leave room for them:
+
+- allow `.oh-my-openclaw/state/` to persist across resumes
+- keep question and obligation files under that runtime root instead of hiding them in ephemeral chat state
+- if you add a first-turn wrapper or hook for prompt routing, keep `scripts/oh-my-openclaw-triage.py` advisory only
+- if you write workflow state from hooks or detached jobs, normalize terminal vs resumable outcomes with `scripts/oh-my-openclaw-run-outcome.py apply` instead of hand-rolling stop semantics
+
 
 Expected shape for the posture discussed in this repo:
 

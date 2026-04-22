@@ -3,8 +3,13 @@
 .oh-my-openclaw/logs/
 .oh-my-openclaw/context/
 .oh-my-openclaw/plans/
+archive/
+logs/evolver/
+memory/evolution/
+state/self-evolution/
 
 # local editor cruft
 .DS_Store
+__pycache__/
 *.swp
 *.tmp

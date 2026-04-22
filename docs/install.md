@@ -19,7 +19,9 @@ This repo is meant to be copied into a real OpenClaw workspace. A bare git clone
 ## Expected runtime directories
 
 ```bash
-mkdir -p .oh-my-openclaw/state
+mkdir -p .oh-my-openclaw/state/questions
+mkdir -p .oh-my-openclaw/state/question-obligations
+mkdir -p .oh-my-openclaw/state/sessions
 mkdir -p .oh-my-openclaw/context
 mkdir -p .oh-my-openclaw/plans
 mkdir -p .oh-my-openclaw/logs
@@ -52,9 +54,9 @@ The least-annoying migration pattern in a real workspace is:
 
 1. archive legacy `skills/omx-*`
 2. copy in the new workflow skills (`autopilot`, `deep-interview`, `ralph`, `ralplan`, `team`, `ultraqa`, `ultrawork`)
-3. install `scripts/dispatch-openclaw-turn.sh` and `scripts/oh-my-openclaw-state-doctor.sh`
+3. install `scripts/dispatch-openclaw-turn.sh`, `scripts/oh-my-openclaw-state-doctor.sh`, `scripts/oh-my-openclaw-question.py`, `scripts/oh-my-openclaw-run-outcome.py`, and `scripts/oh-my-openclaw-triage.py`
 4. keep old entrypoints only as thin shims if your workspace still calls them
-5. create `.oh-my-openclaw/{state,context,plans,logs}`
+5. create `.oh-my-openclaw/{state/questions,state/question-obligations,state/sessions,context,plans,logs}`
 6. inspect old `.omx/state/` residue so stale markers do not confuse later resume logic
 
 This is the difference between a rename and an actual cutover.
@@ -65,7 +67,7 @@ Do the smoke test in a disposable OpenClaw workspace or isolated profile, not ju
 
 Good smoke test:
 - copy the files into a clean workspace
-- create `.oh-my-openclaw/state`, `context`, `plans`, and `logs`
+- create `.oh-my-openclaw/state`, `state/questions`, `state/question-obligations`, `state/sessions`, `context`, `plans`, and `logs`
 - add the AGENTS snippet
 - run `scripts/privacy-scan.sh`
 - run `bash -n` against the helper scripts

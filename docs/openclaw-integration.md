@@ -15,7 +15,7 @@ For many users, the main working surface will be Telegram or another chat channe
 
 - copy `skills/*` into your workspace skill directory
 - copy `scripts/*` into your workspace helper scripts directory
-- keep runtime outputs under `.oh-my-openclaw/`
+- keep runtime outputs under `.oh-my-openclaw/`, including owned question records under `.oh-my-openclaw/state/questions/`
 - keep filled-in personal markdown files private
 
 ## Private vs public split
@@ -37,7 +37,7 @@ A typical flow looks like this:
 
 1. the user sends a natural-language request in Telegram
 2. the assistant decides whether the task needs clarification, planning, execution, QA, or team coordination
-3. the workflow state is persisted under `.oh-my-openclaw/`
+3. the workflow state is persisted under `.oh-my-openclaw/`, and any blocking user question is persisted under `.oh-my-openclaw/state/questions/`
 4. the assistant returns progress, blockers, or completion updates back into Telegram
 
 ## Recommended workflow mapping
@@ -53,7 +53,9 @@ A typical flow looks like this:
 ## Runtime directories
 
 ```bash
-mkdir -p .oh-my-openclaw/state
+mkdir -p .oh-my-openclaw/state/questions
+mkdir -p .oh-my-openclaw/state/question-obligations
+mkdir -p .oh-my-openclaw/state/sessions
 mkdir -p .oh-my-openclaw/context
 mkdir -p .oh-my-openclaw/plans
 mkdir -p .oh-my-openclaw/logs

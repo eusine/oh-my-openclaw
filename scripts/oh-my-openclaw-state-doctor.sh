@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 # oh-my-openclaw-state-doctor.sh
 # Inspect and optionally clean up Oh My OpenClaw workflow state files.
-# Usage: bash scripts/oh-my-openclaw-state-doctor.sh [--clean-stale] [--clean-completed]
+# Usage: bash scripts/oh-my-openclaw-state-doctor.sh [--clean-stale] [--clean-completed] [--clean-legacy] [--archive-legacy-root]
 
 set -euo pipefail
 
 WORKSPACE="${OH_MY_OPENCLAW_WORKSPACE:-$(dirname "$0")/..}"
 STATE_DIR="$WORKSPACE/.oh-my-openclaw/state"
+LEGACY_STATE_DIR="$WORKSPACE/.omx/state"
+LEGACY_ARCHIVE_DIR="$WORKSPACE/archive/legacy-omx-runtime/state"
+LEGACY_ROOT_DIR="$WORKSPACE/.omx"
+LEGACY_ROOT_ARCHIVE_DIR="$WORKSPACE/archive/legacy-omx-runtime/root"
 STALE_HOURS=48
+LEGACY_ACTIVE_HOURS=6
 
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
@@ -18,25 +23,116 @@ RESET='\033[0m'
 
 CLEAN_STALE=false
 CLEAN_COMPLETED=false
+CLEAN_LEGACY=false
+ARCHIVE_LEGACY_ROOT=false
 
 for arg in "$@"; do
   case "$arg" in
     --clean-stale)     CLEAN_STALE=true ;;
     --clean-completed) CLEAN_COMPLETED=true ;;
+    --clean-legacy)    CLEAN_LEGACY=true ;;
+    --archive-legacy-root) ARCHIVE_LEGACY_ROOT=true ;;
     --help|-h)
-      echo "Usage: oh-my-openclaw-state-doctor.sh [--clean-stale] [--clean-completed]"
+      echo "Usage: oh-my-openclaw-state-doctor.sh [--clean-stale] [--clean-completed] [--clean-legacy] [--archive-legacy-root]"
       echo ""
       echo "  --clean-stale      Remove state files that are active but >48h old (or missing updated_at)"
       echo "  --clean-completed  Remove state files with active: false"
+      echo "  --clean-legacy     Move legacy .omx/state files into archive/legacy-omx-runtime/state"
+      echo "  --archive-legacy-root  Move stale top-level .omx residue into archive/legacy-omx-runtime/root while keeping files touched in the last ${LEGACY_ACTIVE_HOURS}h"
       exit 0
       ;;
   esac
 done
 
+archive_legacy_state() {
+  if [[ ! -d "$LEGACY_STATE_DIR" ]]; then
+    return 0
+  fi
+
+  local legacy_count
+  legacy_count=$(find "$LEGACY_STATE_DIR" -type f | wc -l | tr -d ' ')
+
+  if [[ "$legacy_count" == "0" ]]; then
+    echo "No legacy residue files found under: $LEGACY_STATE_DIR"
+    return 0
+  fi
+
+  mkdir -p "$LEGACY_ARCHIVE_DIR"
+
+  local legacy_file rel dest moved_count=0
+  while IFS= read -r -d '' legacy_file; do
+    rel="${legacy_file#"$LEGACY_STATE_DIR"/}"
+    dest="$LEGACY_ARCHIVE_DIR/$rel"
+    mkdir -p "$(dirname "$dest")"
+    mv "$legacy_file" "$dest"
+    (( moved_count++ )) || true
+  done < <(find "$LEGACY_STATE_DIR" -type f -print0)
+
+  find "$LEGACY_STATE_DIR" -depth -type d -empty -delete 2>/dev/null || true
+  find "$WORKSPACE/.omx" -depth -type d -empty -delete 2>/dev/null || true
+
+  echo "Archived $moved_count legacy file(s) to: $LEGACY_ARCHIVE_DIR"
+}
+
+archive_legacy_root() {
+  if [[ ! -d "$LEGACY_ROOT_DIR" ]]; then
+    return 0
+  fi
+
+  local timestamp archive_root cutoff rel dest legacy_file moved_count=0
+  timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
+  archive_root="$LEGACY_ROOT_ARCHIVE_DIR/$timestamp"
+  cutoff="$LEGACY_ACTIVE_HOURS"
+
+  while IFS= read -r -d '' legacy_file; do
+    rel="${legacy_file#"$LEGACY_ROOT_DIR"/}"
+    dest="$archive_root/$rel"
+    mkdir -p "$(dirname "$dest")"
+    mv "$legacy_file" "$dest"
+    (( moved_count++ )) || true
+  done < <(find "$LEGACY_ROOT_DIR" -type f -mmin +$((LEGACY_ACTIVE_HOURS * 60)) -print0)
+
+  find "$LEGACY_ROOT_DIR" -depth -type d -empty -delete 2>/dev/null || true
+
+  if [[ "$moved_count" == "0" ]]; then
+    echo "No stale top-level legacy residue older than ${cutoff}h found under: $LEGACY_ROOT_DIR"
+    return 0
+  fi
+
+  echo "Archived $moved_count stale legacy file(s) to: $archive_root"
+  echo "Recent files touched within ${cutoff}h were kept in place as probable live/runtime residue."
+}
+
 if [[ ! -d "$STATE_DIR" ]]; then
   echo "No .oh-my-openclaw/state/ directory found at: $STATE_DIR"
-  echo "No Oh My OpenClaw state to inspect."
+  if [[ -d "$LEGACY_STATE_DIR" ]]; then
+    echo "Legacy .omx/state detected at: $LEGACY_STATE_DIR"
+    echo "Treating it as archive-only unless explicitly revived."
+    echo ""
+    if $CLEAN_LEGACY; then
+      archive_legacy_state
+    fi
+    if $ARCHIVE_LEGACY_ROOT; then
+      archive_legacy_root
+    fi
+  else
+    echo "No Oh My OpenClaw state to inspect."
+  fi
   exit 0
+fi
+
+if [[ -d "$LEGACY_STATE_DIR" ]]; then
+  echo "Legacy .omx/state detected at: $LEGACY_STATE_DIR"
+  echo "Treating it as archive-only unless explicitly revived."
+  if $CLEAN_LEGACY; then
+    echo ""
+    archive_legacy_state
+  fi
+  if $ARCHIVE_LEGACY_ROOT; then
+    echo ""
+    archive_legacy_root
+  fi
+  echo ""
 fi
 
 ACTIVE_COUNT=0

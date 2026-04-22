@@ -20,7 +20,9 @@ For many OpenClaw users, the real working surface is chat, often Telegram, not a
 Minimal shell setup:
 
 ```bash
-mkdir -p .oh-my-openclaw/state
+mkdir -p .oh-my-openclaw/state/questions
+mkdir -p .oh-my-openclaw/state/question-obligations
+mkdir -p .oh-my-openclaw/state/sessions
 mkdir -p .oh-my-openclaw/context
 mkdir -p .oh-my-openclaw/plans
 mkdir -p .oh-my-openclaw/logs
@@ -45,8 +47,9 @@ Keep the lineage explicit when you publish or announce the repo.
 
 - a public, cleaned-up extraction of the workflow layer
 - a migration of OMX workflow ideas into an OpenClaw-shaped public package
+- the integration surface for a broader Oh My OpenClaw operating layer, including workflow orchestration and human-gated self-improvement lanes
 - skill-first orchestration patterns for OpenClaw
-- minimal helper scripts for runtime state hygiene and local dispatch
+- minimal helper scripts for runtime state hygiene, local dispatch, structured blocking-question records, advisory prompt triage, and normalized run outcomes
 - a documented archive-plus-shim cutover path for replacing an older OMX-named live workspace
 
 ## What this repo is not
@@ -65,11 +68,31 @@ Keep the lineage explicit when you publish or announce the repo.
 - `ultraqa`
 - `team`
 
+## Self-improvement direction
+
+Oh My OpenClaw is not only a workflow wrapper. The intended direction is to absorb the useful parts of Hermes-style self-evolution and combine them with the already-migrated OMX workflow surface.
+
+That means the long-term target is a human-gated improvement system that can optimize skills, tool descriptions, prompt sections, helper docs, and guarded code lanes using conversation evidence, eval datasets, and review packs rather than vague “agent reflection” alone.
+
+## Included helpers
+
+- `scripts/dispatch-openclaw-turn.sh`
+- `scripts/evolver-safe.sh`
+- `scripts/oh-my-openclaw-state-doctor.sh`
+- `scripts/oh-my-openclaw-question.py`
+- `scripts/oh-my-openclaw-run-outcome.py`
+- `scripts/oh-my-openclaw-triage.py`
+
 ## Runtime layout
 
 ```
 .oh-my-openclaw/
   state/
+    questions/
+    question-obligations/
+    prompt-routing-state.json
+    sessions/
+      <session-id>/prompt-routing-state.json
   context/
   plans/
   logs/
@@ -83,17 +106,24 @@ In a real workspace, the clean cutover pattern is not "rename everything and pra
 
 ## Docs included
 
+- `docs/artifact-types.md`
 - `docs/overview.md`
 - `docs/quickstart.md`
 - `docs/workflows.md`
 - `docs/terminology.md`
 - `docs/state-model.md`
 - `docs/compatibility.md`
+- `docs/evolver-safe.md`
 - `docs/legacy-migration.md`
 - `docs/default-markdown-files.md`
 - `docs/openclaw-official-alignment.md`
 - `docs/openclaw-integration.md`
 - `docs/openclaw-config.md`
+- `docs/openclaw-skill-self-evolution-mvp.md`
+- `docs/prompt-sections.md`
+- `docs/release-imports-v0.14.0.md`
+- `docs/routing-rules.md`
+- `docs/self-improvement.md`
 - `docs/team-operating-model.md`
 - `docs/telegram-workflows.md`
 - `docs/private-vs-public.md`
