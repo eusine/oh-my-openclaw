@@ -34,6 +34,7 @@ After implementation, there are typically several failing tests. Fixing them one
 - Track consecutive failure patterns: if the same error appears 3 times, flag as fundamental
 - Stop when all checks pass or cycle limit reached (default 5 cycles, configurable)
 - Use `--fail-fast` to stop at first cycle with any failure (useful for quick iterations)
+- Keep fixing and re-verifying on safe local branches without phrasing the next step as optional user permission
 </Execution_Policy>
 
 <Steps>

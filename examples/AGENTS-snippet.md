@@ -2,6 +2,13 @@
 
 This workspace uses Oh My OpenClaw as a durable workflow layer on top of OpenClaw.
 
+### Action-first contract
+
+- keep going on clear, low-risk, reversible local work
+- ask only when blocked, destructive, irreversible, credential-gated, or materially scope-changing
+- do not drift into weak permission-handoff endings that turn an already-authorized next step into an unnecessary user decision
+- state the next action or verified result directly
+
 ### Available workflow skills
 
 - `deep-interview`

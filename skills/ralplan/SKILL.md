@@ -19,7 +19,7 @@ Ralplan is a structured consensus planning workflow. It runs a planner → archi
 
 <Do_Not_Use_When>
 - Task is a simple bug fix or single-file change — delegate directly to an executor
-- Requirements are still vague — run `deep-interview` first to clarify
+- Requirements are still vague even after one targeted clarifying question or one safe assumption — then run `deep-interview`
 - User asks to "just do it" with clear enough scope — use `ralph` or direct execution
 - Task is a quick query or investigation with no implementation needed
 </Do_Not_Use_When>
@@ -41,7 +41,7 @@ Examples that trigger the gate:
 When triggered, do NOT proceed to planning. Instead:
 1. Explain that the request needs more specificity for ralplan to produce a useful plan.
 2. Ask one targeted clarifying question to identify the most important missing anchor.
-3. Optionally offer to run `deep-interview` for full Socratic clarification.
+3. If one targeted clarifying question is not enough, optionally offer `deep-interview` for full Socratic clarification.
 
 **Bypass:** Prefix the request with `force:` or `!` to skip the gate and start planning immediately. Example: `force: improve the API`.
 

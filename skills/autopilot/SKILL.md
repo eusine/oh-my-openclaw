@@ -31,12 +31,13 @@ Most non-trivial software tasks require coordinated phases: understanding requir
 <Execution_Policy>
 - Each phase must complete before the next begins
 - Parallel execution is used within phases where possible (Phase 2 and Phase 4)
-- QA cycles repeat up to 5 times; if the same error persists 3 times, stop and report the fundamental issue
+- QA cycles repeat up to 5 times; if the same root issue persists across 3 cycles, stop and report the fundamental issue instead of looping on superficial retries
 - Validation requires approval from all reviewers; rejected items get fixed and re-validated
 - If a deep-interview spec exists, use it as high-clarity phase input instead of re-expanding from scratch
-- If input is too vague for reliable expansion, offer/trigger `deep-interview` first
-- Default to concise, evidence-dense progress and completion reporting
-- Continue through clear, low-risk, reversible next steps automatically; ask only when the next step is materially branching, destructive, or preference-dependent
+- If input is too vague for reliable expansion, first try one targeted clarifying question or one reasonable assumption; only offer/trigger `deep-interview` when ambiguity would still create costly rework
+- Default to concise, evidence-dense progress and completion reporting, cite concrete files changed, checks run, outputs, and blockers when reporting progress, and avoid repetitive status chatter or verbose status spam
+- Continue through clear, low-risk, reversible next steps automatically; ask only when the next step is materially branching, destructive, or preference-dependent, and do not create needless permission prompts for routine reversible work
+- On safe execution branches, do not hand permission back with weak optional wording; continue and report the action/result directly
 </Execution_Policy>
 
 <Steps>
@@ -52,7 +53,7 @@ Most non-trivial software tasks require coordinated phases: understanding requir
    - Constraints
    - Unknowns/open questions
    - Likely codebase touchpoints
-4. If ambiguity remains high, use direct file search tools for brownfield facts, then run `deep-interview --quick <task>` before proceeding.
+4. If ambiguity remains high, use direct file search tools for brownfield facts, identify the concrete missing requirements, ask at most one high-leverage clarifying question when that should unblock the task, and run `deep-interview --quick <task>` only when ambiguity still remains too costly. Do not jump straight to coding from a vague request.
 5. Initialize state — write to `.oh-my-openclaw/state/autopilot-state.json`:
 
 ```json
@@ -74,8 +75,8 @@ Most non-trivial software tasks require coordinated phases: understanding requir
 
 ## Phase 0 — Expansion: Turn the idea into a detailed spec
 
-- If `.oh-my-openclaw/specs/deep-interview-{slug}.md` exists: reuse it and skip redundant expansion
-- If prompt is highly vague: route to `deep-interview --quick` for clarification
+- If `.oh-my-openclaw/specs/deep-interview-{slug}.md` exists: reuse it and skip redundant expansion unless there is a newly discovered blocker or gap. Do not re-expand from scratch when the existing spec is still valid.
+- If prompt is highly vague: first ask one high-leverage clarifying question or make one safe assumption; route to `deep-interview --quick` only if the task would still be poorly specified after that
 - Spawn analyst subagent (thorough tier): extract requirements
 - Spawn architect subagent (thorough tier): create technical specification
 - Output: `.oh-my-openclaw/plans/autopilot-spec.md`
@@ -110,8 +111,10 @@ Run `ultraqa` internally:
 3. Fix failures via parallel executor subagents
 4. Re-run to verify
 5. Repeat up to `max_qa_cycles` (default 5)
-6. If same error persists across 3 cycles → stop and report fundamental issue
-7. Update state: `current_phase: "validation"` when QA passes
+6. Treat repeated failures by root-cause pattern, not by noisy surface symptoms
+7. Do not brute-force an infinite retry loop or disguise the same failure as a new issue just to keep cycling
+8. If same error persists across 3 cycles → stop and report fundamental issue
+9. Update state: `current_phase: "validation"` when QA passes
 
 ## Phase 4 — Validation: Multi-perspective review in parallel
 
@@ -218,3 +221,13 @@ deep-interview → ralplan → autopilot
 - `ralplan`: consensus planning (planner/architect/critic)
 - `autopilot`: execution + QA + validation
 </Recommended_Clarity_Pipeline>
+
+<Operational_Reinforcements>
+- Report concrete files changed, report checks run, report outputs produced, and report blockers plainly, including the decision needed when one exists.
+- Reuse existing spec as source of truth, resume from latest relevant snapshot, and use context snapshot before planning. Do not drift into blank-start restart.
+- Route vague input through deep-interview quick. Do not code immediately from ambiguous brief, and do not call exploration execution or brainstorming execution.
+- Launch long-running work in background, keep moving while background work runs, and preserve reversible next steps. Do not block the entire autopilot loop on background work.
+- Pause only for destructive steps or materially branching steps, not for a routine permission prompt.
+- Stop after 3 repeated failures and report root cause, not surface symptom.
+- Complete execution, QA, and validation before calling done. Do not skip validation or report partial progress as completion.
+</Operational_Reinforcements>

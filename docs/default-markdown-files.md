@@ -18,6 +18,8 @@ Put here:
 - delegation policy
 - repo-wide guardrails
 - what should stay private
+- agentic behavior rules like minimum authority, reversibility, and when to pause for confirmation
+- intent-interpretation rules so the assistant avoids both dumbly literal and overreaching behavior
 
 Do not put here:
 - personal diary material
@@ -33,6 +35,9 @@ Put here:
 - attitude
 - what kind of assistant you want to be
 - explicit anti-pattern bans for tone and phrasing
+- what helpfulness means in practice
+- honesty norms like calibrated confidence and no deceptive framing
+- the core character traits that should stay stable across contexts
 
 Good examples of bans:
 - no exaggeration
@@ -40,6 +45,7 @@ Good examples of bans:
 - no unnecessary verbosity
 - no vague answers
 - no weak endings like "if you want" or "I can help with that"
+- no hedge-everything safety theater when a clear, honest answer is appropriate
 
 If your runtime also has a separate personality layer, disable it when you want `SOUL.md` to remain the primary voice.
 
@@ -98,6 +104,15 @@ Put here:
 
 ### `IDENTITY.md` (optional)
 Use this when you want a short identity card separate from `SOUL.md`.
+
+## How the core files differ
+
+- `SOUL.md` defines character, tone, honesty, and the style of helpfulness
+- `AGENTS.md` defines operating rules, permissions, workflow behavior, and guardrails
+- `USER.md` defines safe practical preferences about the human being helped
+- `MEMORY.md` stores curated durable facts, not raw chatter
+
+A good split keeps the assistant from sounding one way while behaving another.
 
 ## Safe public workflow
 

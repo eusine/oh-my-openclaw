@@ -10,7 +10,7 @@ Deep Interview is an intent-first Socratic clarification loop before planning or
 </Purpose>
 
 <Use_When>
-- The request is broad, ambiguous, or missing concrete acceptance criteria
+- The request is broad, ambiguous, or missing concrete acceptance criteria **and** one reasonable assumption or one targeted clarifying question would still leave major cost/risk of misalignment
 - The user says "deep interview", "interview me", "ask me everything", "don't assume", or "ouroboros"
 - The user wants to avoid misaligned implementation from underspecified requirements
 - You need a requirements artifact before handing off to `ralplan`, `autopilot`, `ralph`, or `team`
@@ -21,6 +21,8 @@ Deep Interview is an intent-first Socratic clarification loop before planning or
 - The user explicitly asks to skip planning/interview and execute immediately
 - The user asks for lightweight brainstorming only, use a lightweight thinking pass instead
 - A complete PRD/plan already exists and execution should start
+- One reasonable assumption would unblock execution safely
+- A single high-leverage clarifying question would make the task actionable enough to proceed
 </Do_Not_Use_When>
 
 <Why_This_Exists>
@@ -41,19 +43,24 @@ If no flag is provided, use **Standard**.
 </Depth_Profiles>
 
 <Execution_Policy>
-- Ask ONE question per round (never batch)
+- Treat deep-interview as a last-mile clarification workflow, not the default response to ordinary incompleteness
+- Before entering deep-interview, first ask: can I safely proceed by making one reasonable assumption or by asking one targeted clarifying question? If yes, do that instead
+- Never auto-route into deep-interview solely because the prompt is short, casual, or lacks a full spec
+- Ask ONE question per round (never batch multiple questions in one round)
 - Ask about intent and boundaries before implementation detail
 - Target the weakest clarity dimension each round after applying stage-priority rules below
-- Treat every answer as a claim to pressure-test: the next question should demand evidence, expose a hidden assumption, force a tradeoff, or reframe root cause vs symptom
+- Treat every answer as a claim to pressure-test: the next question should demand evidence, expose a hidden assumption, force a tradeoff, or reframe root cause vs symptom rather than settling for surface-level clarification only
 - Do not rotate to a new clarity dimension just for coverage when the current answer is still vague; stay on the same thread until one layer deeper, one assumption clearer, or one boundary tighter
 - Before crystallizing, complete at least one explicit pressure pass that revisits an earlier answer with a deeper or tradeoff-focused follow-up
 - Gather codebase facts via direct file read/search tools before asking the user about internals
 - Reduce user effort: ask only the highest-leverage unresolved question; never ask the user for codebase facts that can be discovered directly
 - For brownfield work, prefer evidence-backed confirmation questions: "I found X in Y. Should this change follow that pattern?"
-- Use AskUserQuestion for each interview round when available; if unavailable, use plain-text single-question turns
+- Use AskUserQuestion for each interview round when available; if unavailable, create a structured question record with `scripts/oh-my-openclaw-question.py ask ...`, let required questions mint a linked question obligation automatically, then ask the same single question in plain chat with the question id attached
 - Re-score ambiguity after each answer and show progress transparently
 - Do not hand off to execution while ambiguity remains above threshold unless user explicitly opts to proceed with warning
 - Do not crystallize or hand off while `Non-goals` or `Decision Boundaries` remain unresolved, even if the weighted ambiguity threshold is met
+- If a complete PRD or execution-ready plan already exists, do not redo discovery unless the user explicitly asks for another clarification pass
+- Respect requested depth profile behavior, especially quick-mode thresholds and round limits
 - Persist mode state for resume safety (write to `.oh-my-openclaw/state/deep-interview-state.json`)
 </Execution_Policy>
 
@@ -102,7 +109,12 @@ If no flag is provided, use **Standard**.
     "codebase_context": null,
     "current_stage": "intent-first",
     "current_focus": "intent",
-    "context_snapshot_path": ".oh-my-openclaw/context/<slug>-<timestamp>.md"
+    "context_snapshot_path": ".oh-my-openclaw/context/<slug>-<timestamp>.md",
+    "pending_question_id": null,
+    "pending_question_obligation_id": null,
+    "question_state_root": ".oh-my-openclaw/state/questions",
+    "question_obligation_root": ".oh-my-openclaw/state/question-obligations",
+    "run_outcome": "continue"
   }
 }
 ```
@@ -147,10 +159,16 @@ Detailed dimensions:
 
 ### 2b) Ask the question
 
+Before sending the question:
+- create or update a question record under `.oh-my-openclaw/state/questions/` with `scripts/oh-my-openclaw-question.py ask --workflow deep-interview --slug <slug> --interview-id <uuid> --required ...`
+- if the question is required, persist the returned `obligation_id` into `pending_question_obligation_id` as the fail-closed ledger entry
+- persist the returned `question_id` into `pending_question_id`
+- if AskUserQuestion is unavailable, include the question id in the plain-chat prompt so resume and Stop gating stay anchored to the owned record
+
 Present to the user:
 
 ```
-Round {n} | Target: {weakest_dimension} | Ambiguity: {score}%
+Round {n} | Target: {weakest_dimension} | Ambiguity: {score}% | Question ID: {question_id}
 
 {question}
 ```
@@ -176,6 +194,7 @@ Show weighted breakdown table, readiness-gate status, and next focus dimension.
 ### 2e) Persist state
 
 Append round result and updated scores to `.oh-my-openclaw/state/deep-interview-state.json`.
+When the user answers, record it with `scripts/oh-my-openclaw-question.py answer <question_id> ...`. After the answer has been consumed into the interview state, satisfy the linked obligation with `scripts/oh-my-openclaw-question.py satisfy-obligation <obligation_id> --question-id <question_id>`, then clear `pending_question_id` and `pending_question_obligation_id`.
 
 ### 2f) Round controls
 
@@ -262,15 +281,18 @@ Present execution options after artifact generation. Treat the spec as requireme
 <State_Management>
 State file: `{workspace}/.oh-my-openclaw/state/deep-interview-state.json`
 
-- **On start:** write state JSON with `active: true`
-- **On each round:** update `rounds` array and `current_ambiguity`
-- **On completion:** update `active: false`, set `completed_at`
-- **On handoff:** preserve state for downstream skill context
+- **On start:** write state JSON with `active: true` and `run_outcome: "continue"`
+- **On each round:** update `rounds` array, `current_ambiguity`, and any `pending_question_obligation_id`
+- **On completion:** update `active: false`, set `completed_at`, and normalize `run_outcome` through `scripts/oh-my-openclaw-run-outcome.py apply`
+- **On handoff:** preserve state for downstream skill context and fail closed if `obligation-blockers` still reports a pending required question
 - **On resume:** read existing state file and continue from last round
 </State_Management>
 
 <Tool_Usage>
 - Use file read and search tools (Read, Grep, Glob) for codebase fact gathering — do not ask the user for facts that can be discovered directly
-- Use AskUserQuestion for each interview round when available; fall back to plain-text single-question turns
+- Use AskUserQuestion for each interview round when available; otherwise use `scripts/oh-my-openclaw-question.py` to own the question lifecycle and fall back to plain-text single-question turns
 - Write artifacts using file write tools to `.oh-my-openclaw/` paths in the workspace
+- Use `scripts/oh-my-openclaw-question.py blockers --workflow deep-interview --slug <slug>` before stopping if you only need unanswered question records
+- Use `scripts/oh-my-openclaw-question.py obligation-blockers --workflow deep-interview --slug <slug>` before stopping or handing off so answered-but-unconsumed required questions still block correctly
+- Use `scripts/oh-my-openclaw-run-outcome.py apply` when writing terminal vs resumable deep-interview state so downstream resume logic sees one normalized contract
 </Tool_Usage>

@@ -36,6 +36,7 @@ Sequential task execution wastes time when tasks are independent. Ultrawork enab
 - Use background execution for long-running operations (builds, installs, tests)
 - Run quick checks (file reads, git status, simple commands) in the foreground
 - Track task completion — collect results from all parallel workers before declaring done
+- Treat safe continuation as the default, not a handoff moment; do not end worker orchestration with weak optional phrasing when the next local step is still clear
 </Execution_Policy>
 
 <Model_Routing>

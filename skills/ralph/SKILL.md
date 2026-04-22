@@ -20,7 +20,7 @@ Ralph is not autopilot. It is the execution and persistence engine. Use ralph di
 </Use_When>
 
 <Do_Not_Use_When>
-- The task is ambiguous — run `deep-interview` first
+- The task is still ambiguous after one targeted clarifying question or one safe assumption — then run `deep-interview`
 - The task needs architectural consensus — use `ralplan` first
 - The task requires full pipeline automation — use `autopilot`
 - The task is a simple single-step action — delegate directly to an executor subagent
@@ -37,8 +37,10 @@ Complex tasks rarely complete in a single pass. Tools fail, tests reveal issues,
 - Fix issues found during verification before reporting completion
 - Apply deslop pass by default after execution (skip with `--no-deslop`)
 - Iterate until all acceptance criteria are met or a fundamental blocker is discovered
-- If the same failure recurs across 3 consecutive iterations, stop and report the fundamental issue
+- Do not execute ambiguous work immediately, clarify or redirect first when the task is still underspecified
+- Do not grind in an infinite retry loop, if the same failure recurs across 3 consecutive iterations, stop and report the fundamental issue
 - Persist state after each iteration for session resume safety
+- Keep driving safe reversible work without permission-handoff phrasing; ask only when a real blocker, destructive branch, or scope-changing choice appears
 </Execution_Policy>
 
 <Steps>

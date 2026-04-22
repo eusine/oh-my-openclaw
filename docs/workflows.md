@@ -1,5 +1,13 @@
 # Workflows
 
+## Action-first default
+
+Across workflows, the default is:
+
+- continue through clear, low-risk, reversible local work
+- ask only when blocked, destructive, irreversible, credential-gated, or materially scope-changing
+- avoid weak permission-handoff endings that turn a clear next step into unnecessary user approval theater
+
 ## deep-interview
 
 Use when the request is still ambiguous and you need crisp requirements before building.

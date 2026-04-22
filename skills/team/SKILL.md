@@ -40,6 +40,7 @@ Some tasks are genuinely large — implementing a full feature across multiple s
 - Use hooks only for lightweight lifecycle glue, not as the core team runtime
 - After all workers complete, coordinator runs a merge + verification pass
 - If a worker fails, coordinator reassigns its partition to another worker or handles directly
+- Coordinators should keep safe local follow-through moving instead of asking soft permission-handoff questions once the next merge or verification step is already clear
 </Execution_Policy>
 
 <Steps>
