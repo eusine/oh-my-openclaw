@@ -39,4 +39,5 @@ mkdir -p .oh-my-openclaw/logs
 - `docs/team-operating-model.md`
 - `docs/telegram-workflows.md`
 - `docs/release-imports-v0.14.0.md`
+- `docs/release-imports-v0.14.4.md`
 - `examples/telegram-prompts.md`

@@ -118,6 +118,7 @@ ANCHORED_EDIT_WORD_LIMIT = 15
 CLARIFYING_STARTERS = ('yes', 'no', 'yeah', 'nope', 'ok', 'okay', 'the ', 'that', 'those', 'it')
 DEFAULT_STATE_ROOT = Path('.oh-my-openclaw/state')
 STATE_FILENAME = 'prompt-routing-state.json'
+KOREAN_ULW_ALIASES = ('ㅕㅣㅈ',)
 
 
 @dataclass
@@ -169,6 +170,9 @@ def triage_prompt(prompt: str) -> TriageDecision:
 
     if any(phrase in normalized for phrase in OPT_OUT_PHRASES):
         return TriageDecision(lane='PASS', reason='explicit_opt_out')
+
+    if normalized == 'ulw' or normalized.startswith('ulw ') or any(normalized == alias or normalized.startswith(f'{alias} ') for alias in KOREAN_ULW_ALIASES):
+        return TriageDecision(lane='LIGHT', destination='ultrawork', reason='ultrawork_keyword')
 
     if any(normalized.startswith(starter) for starter in EXPLORE_STARTERS):
         return TriageDecision(lane='LIGHT', destination='explore', reason='question_or_explanation')

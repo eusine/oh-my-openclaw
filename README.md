@@ -122,6 +122,7 @@ In a real workspace, the clean cutover pattern is not "rename everything and pra
 - `docs/openclaw-skill-self-evolution-mvp.md`
 - `docs/prompt-sections.md`
 - `docs/release-imports-v0.14.0.md`
+- `docs/release-imports-v0.14.4.md`
 - `docs/routing-rules.md`
 - `docs/self-improvement.md`
 - `docs/team-operating-model.md`

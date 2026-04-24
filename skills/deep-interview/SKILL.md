@@ -56,6 +56,9 @@ If no flag is provided, use **Standard**.
 - Reduce user effort: ask only the highest-leverage unresolved question; never ask the user for codebase facts that can be discovered directly
 - For brownfield work, prefer evidence-backed confirmation questions: "I found X in Y. Should this change follow that pattern?"
 - Use AskUserQuestion for each interview round when available; if unavailable, create a structured question record with `scripts/oh-my-openclaw-question.py ask ...`, let required questions mint a linked question obligation automatically, then ask the same single question in plain chat with the question id attached
+- If a question is launched in a background terminal/session, wait for that session to finish and read the structured answer before scoring ambiguity, asking another round, or handing off
+- Always run preflight context intake before the first interview question; if the initial context is oversized, first ask for or create a prompt-safe summary and block ambiguity scoring/handoff until it is recorded
+- Keep prompt payloads within budget by summarizing retained history; preserve newest/highest-signal answers and never let raw oversized context crowd out the current question
 - Re-score ambiguity after each answer and show progress transparently
 - Do not hand off to execution while ambiguity remains above threshold unless user explicitly opts to proceed with warning
 - Do not crystallize or hand off while `Non-goals` or `Decision Boundaries` remain unresolved, even if the weighted ambiguity threshold is met
@@ -70,7 +73,8 @@ If no flag is provided, use **Standard**.
 
 1. Parse the input and derive a short task slug (lowercase, hyphenated).
 2. Attempt to load the latest relevant context snapshot from `.oh-my-openclaw/context/{slug}-*.md`.
-3. If no snapshot exists, create a minimum context snapshot with:
+3. Check whether the provided initial context or loaded snapshot is too large for safe prompt use. If it is oversized, the first interview round must ask for or create a concise prompt-safe summary instead of scoring ambiguity or continuing to downstream handoff.
+4. If no snapshot exists, create a minimum context snapshot with:
    - Task statement
    - Desired outcome
    - Stated solution (what the user asked for)
@@ -80,7 +84,8 @@ If no flag is provided, use **Standard**.
    - Unknowns/open questions
    - Decision-boundary unknowns
    - Likely codebase touchpoints
-4. Save snapshot to `.oh-my-openclaw/context/{slug}-{timestamp}.md` (UTC `YYYYMMDDTHHMMSSZ`).
+   - Prompt-safe initial-context summary status (`not_needed`, `needed`, or `recorded`)
+5. Save snapshot to `.oh-my-openclaw/context/{slug}-{timestamp}.md` (UTC `YYYYMMDDTHHMMSSZ`).
 
 ## Phase 1: Initialize
 
@@ -110,6 +115,8 @@ If no flag is provided, use **Standard**.
     "current_stage": "intent-first",
     "current_focus": "intent",
     "context_snapshot_path": ".oh-my-openclaw/context/<slug>-<timestamp>.md",
+    "prompt_safe_summary_status": "not_needed|needed|recorded",
+    "prompt_safe_summary": null,
     "pending_question_id": null,
     "pending_question_obligation_id": null,
     "question_state_root": ".oh-my-openclaw/state/questions",
@@ -126,6 +133,8 @@ If no flag is provided, use **Standard**.
 Repeat until ambiguity `<= threshold`, pressure pass complete, readiness gates explicit, user exits with warning, or max rounds reached.
 
 ### 2a) Generate next question
+
+If the initial context is oversized and no prompt-safe summary has been recorded yet, the next question must be only a summary request. Do not score ambiguity, run readiness gates, crystallize, or hand off to `ralplan`, `autopilot`, `ralph`, or `team` until that summary answer is captured.
 
 Use:
 - Original idea
@@ -160,6 +169,7 @@ Detailed dimensions:
 ### 2b) Ask the question
 
 Before sending the question:
+- check for answered-but-unconsumed pending questions with `scripts/oh-my-openclaw-question.py answered-pending --workflow deep-interview --slug <slug>`; if the current pending question already has an answer, consume it into state and satisfy its obligation instead of re-prompting
 - create or update a question record under `.oh-my-openclaw/state/questions/` with `scripts/oh-my-openclaw-question.py ask --workflow deep-interview --slug <slug> --interview-id <uuid> --required ...`
 - if the question is required, persist the returned `obligation_id` into `pending_question_obligation_id` as the fail-closed ledger entry
 - persist the returned `question_id` into `pending_question_id`
@@ -194,7 +204,7 @@ Show weighted breakdown table, readiness-gate status, and next focus dimension.
 ### 2e) Persist state
 
 Append round result and updated scores to `.oh-my-openclaw/state/deep-interview-state.json`.
-When the user answers, record it with `scripts/oh-my-openclaw-question.py answer <question_id> ...`. After the answer has been consumed into the interview state, satisfy the linked obligation with `scripts/oh-my-openclaw-question.py satisfy-obligation <obligation_id> --question-id <question_id>`, then clear `pending_question_id` and `pending_question_obligation_id`.
+When the user answers, record it with `scripts/oh-my-openclaw-question.py answer <question_id> ...`. Before asking again, check `answered-pending`; if the answer exists, consume it into the interview state, satisfy the linked obligation with `scripts/oh-my-openclaw-question.py satisfy-obligation <obligation_id> --question-id <question_id>`, then clear `pending_question_id` and `pending_question_obligation_id`. This prevents answered rounds from being re-prompted after resume or Stop/retry paths.
 
 ### 2f) Round controls
 
@@ -235,6 +245,7 @@ Spec should include:
 - Pressure-pass findings
 - Brownfield evidence vs inference notes
 - Technical context findings
+- Prompt-safe initial-context summary when oversized context was provided, plus references to any full source documents
 - Full or condensed transcript
 
 ### Autoresearch specialization
@@ -293,6 +304,7 @@ State file: `{workspace}/.oh-my-openclaw/state/deep-interview-state.json`
 - Use AskUserQuestion for each interview round when available; otherwise use `scripts/oh-my-openclaw-question.py` to own the question lifecycle and fall back to plain-text single-question turns
 - Write artifacts using file write tools to `.oh-my-openclaw/` paths in the workspace
 - Use `scripts/oh-my-openclaw-question.py blockers --workflow deep-interview --slug <slug>` before stopping if you only need unanswered question records
+- Use `scripts/oh-my-openclaw-question.py answered-pending --workflow deep-interview --slug <slug>` before re-prompting so answered rounds are consumed instead of asked again
 - Use `scripts/oh-my-openclaw-question.py obligation-blockers --workflow deep-interview --slug <slug>` before stopping or handing off so answered-but-unconsumed required questions still block correctly
 - Use `scripts/oh-my-openclaw-run-outcome.py apply` when writing terminal vs resumable deep-interview state so downstream resume logic sees one normalized contract
 </Tool_Usage>

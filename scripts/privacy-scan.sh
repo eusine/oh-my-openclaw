@@ -15,12 +15,11 @@ patterns=(
 )
 
 exclude_globs=(
-  '!/.git'
-  '!.git'
-  '!node_modules'
-  '!dist'
-  '!scripts/privacy-scan.sh'
-  '!.github/workflows/smoke.yml'
+  '!**/.git/**'
+  '!**/node_modules/**'
+  '!**/dist/**'
+  '!**/scripts/privacy-scan.sh'
+  '!**/.github/workflows/smoke.yml'
 )
 
 echo "Privacy scan root: $root_dir"

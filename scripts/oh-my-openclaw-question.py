@@ -153,6 +153,10 @@ def parse_args() -> argparse.Namespace:
     blockers.add_argument('--workflow')
     blockers.add_argument('--slug')
 
+    answered_pending = sub.add_parser('answered-pending', help='List answered questions whose required obligations are still pending/active')
+    answered_pending.add_argument('--workflow')
+    answered_pending.add_argument('--slug')
+
     obligate = sub.add_parser('obligate', help='Create or refresh a pending required-question obligation')
     obligate.add_argument('--workflow', default='deep-interview')
     obligate.add_argument('--slug')
@@ -396,6 +400,24 @@ def cmd_blockers(args: argparse.Namespace, stores: Stores) -> int:
     return 10 if blockers else 0
 
 
+def cmd_answered_pending(args: argparse.Namespace, stores: Stores) -> int:
+    records = _filtered_records(stores.questions.records(), workflow=args.workflow, slug=args.slug)
+    obligations_by_question = {
+        record.get('question_id'): record
+        for record in stores.obligations.records()
+        if record.get('question_id') and record.get('required') and record.get('status') == 'pending'
+    }
+    answered = []
+    for record in records:
+        obligation = obligations_by_question.get(record.get('question_id'))
+        if not obligation:
+            continue
+        if record.get('required') and record.get('status') == 'answered':
+            answered.append({'question': record, 'obligation': obligation})
+    print_json({'count': len(answered), 'answered_pending': answered})
+    return 10 if answered else 0
+
+
 def cmd_obligate(args: argparse.Namespace, stores: Stores) -> int:
     obligation, path = create_or_refresh_obligation(
         stores,
@@ -482,6 +504,8 @@ def main() -> int:
         return cmd_list(args, stores)
     if command == 'blockers':
         return cmd_blockers(args, stores)
+    if command == 'answered-pending':
+        return cmd_answered_pending(args, stores)
     if command == 'obligate':
         return cmd_obligate(args, stores)
     if command == 'satisfy-obligation':
