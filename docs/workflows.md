@@ -38,6 +38,14 @@ Use when implementation exists and you want build, lint, test, and fix cycles.
 Use when the task can be decomposed across several coordinated workers.
 In OpenClaw terms, that means one leader session coordinating detached worker subagents and then merging the results.
 
+## visual-ralph
+
+Use when the task is frontend/UI implementation with a visual target: generated mockup, static reference, or live URL baseline. Visual Ralph requires an approved reference before implementation, then loops Ralph-style code edits through `visual-verdict`, screenshots, and optional pixel diff evidence until the UI matches and the design system is reproducible.
+
+## visual-verdict
+
+Use inside visual implementation loops when a generated screenshot must be judged against one or more reference images. It returns strict JSON with a 0-100 score, pass/revise/fail verdict, concrete differences, and next-edit suggestions.
+
 ## Comparison
 
 | Workflow | Best when | Main pattern |
@@ -46,4 +54,6 @@ In OpenClaw terms, that means one leader session coordinating detached worker su
 | `ralplan` | the plan is expensive to get wrong | deliberate before building |
 | `ralph` | one owner should keep pushing until done | persistent single-owner execution |
 | `team` | parallel workers genuinely help | leader + worker subagents |
+| `visual-ralph` | UI implementation needs visual fidelity | approved reference -> Ralph -> verdict loop |
+| `visual-verdict` | screenshot/reference comparison is needed | strict JSON visual QA |
 | `autopilot` | the whole lifecycle should be managed end to end | expansion -> planning -> execution -> QA -> validation |

@@ -18,6 +18,8 @@ This workspace uses Oh My OpenClaw as a durable workflow layer on top of OpenCla
 - `ultrawork`
 - `ultraqa`
 - `team`
+- `visual-ralph`
+- `visual-verdict`
 
 ### Runtime state
 

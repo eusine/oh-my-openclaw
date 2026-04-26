@@ -67,6 +67,8 @@ Keep the lineage explicit when you publish or announce the repo.
 - `ultrawork`
 - `ultraqa`
 - `team`
+- `visual-ralph`
+- `visual-verdict`
 
 ## Self-improvement direction
 
@@ -126,6 +128,8 @@ In a real workspace, the clean cutover pattern is not "rename everything and pra
 - `docs/routing-rules.md`
 - `docs/self-improvement.md`
 - `docs/team-operating-model.md`
+- `docs/visual-ralph.md`
+- `docs/release-imports-v0.15.0.md`
 - `docs/telegram-workflows.md`
 - `docs/private-vs-public.md`
 - `docs/install.md`

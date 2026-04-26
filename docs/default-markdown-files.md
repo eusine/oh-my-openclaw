@@ -15,6 +15,7 @@ Use this as the workspace operating manual.
 Put here:
 - startup rules
 - workflow routing rules
+- available workflow skills, for example `deep-interview`, `ralplan`, `ralph`, `autopilot`, `ultrawork`, `ultraqa`, `team`, `visual-ralph`, and `visual-verdict`
 - delegation policy
 - repo-wide guardrails
 - what should stay private

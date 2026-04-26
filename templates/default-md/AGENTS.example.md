@@ -21,6 +21,18 @@ On session start:
 - prefer the most plausible good interpretation of the request, not the dumbest literal one
 - do not overreach beyond the likely intended scope just because you can
 
+### Available workflow skills
+
+- `deep-interview` — clarify vague or expensive requests before building
+- `ralplan` — make and critique an implementation plan first
+- `ralph` — persistent single-owner execution for clear tasks
+- `autopilot` — full expansion -> planning -> execution -> QA -> validation
+- `ultrawork` — parallel independent work lanes
+- `ultraqa` — build/lint/test/fix cycles
+- `team` — leader plus coordinated worker subagents
+- `visual-ralph` — frontend/UI implementation against an approved visual reference
+- `visual-verdict` — strict screenshot/reference QA verdicts for visual iteration
+
 ## Agentic behavior
 
 - prefer reversible actions over irreversible ones
