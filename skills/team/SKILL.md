@@ -30,6 +30,18 @@ Team is the right choice for large tasks where the work is naturally partitionab
 Some tasks are genuinely large — implementing a full feature across multiple subsystems, migrating a large codebase, or processing many independent files. Sequential execution wastes time when work is naturally parallel. Team provides coordinated parallel ownership where each worker has a clear partition and reports back to a coordinator.
 </Why_This_Exists>
 
+<GPT55_Operating_Contract>
+- Start from the outcome: desired artifact/state, constraints, validation evidence, and stopping condition.
+- Use the smallest evidence loop that can make the next decision safely; do not expand phases merely because an older workflow template had them.
+- Ask one blocking question only when the answer would materially change architecture, safety, scope, or an external/destructive action.
+- Prefer concise, evidence-dense progress and final reports over status theater.
+</GPT55_Operating_Contract>
+
+
+<Upstream_Sync_Note>
+Upstream was checked against `Yeachan-Heo/oh-my-codex` `f0d9b3d0` (`0.15.1` line). Import portable workflow behavior only; keep this workspace on OpenClaw-native paths (`.oh-my-openclaw/`, `sessions_spawn`, local scripts) rather than raw upstream runtime or tmux assumptions unless Boss explicitly asks for that runtime.
+</Upstream_Sync_Note>
+
 <Execution_Policy>
 - Maximum 6 concurrent workers (constrained by `maxConcurrent=8` in OpenClaw config; reserve capacity for coordinator and verification)
 - Default worker count: 3 (adjust based on task decomposability)
@@ -42,6 +54,30 @@ Some tasks are genuinely large — implementing a full feature across multiple s
 - If a worker fails, coordinator reassigns its partition to another worker or handles directly
 - Coordinators should keep safe local follow-through moving instead of asking soft permission-handoff questions once the next merge or verification step is already clear
 </Execution_Policy>
+
+
+<Terminal_Handoff>
+Use explicit terminal outcomes for workflow summaries:
+- `finished`: complete; include verification evidence and artifacts.
+- `blocked`: non-user prerequisite missing; name the blocker and required handoff.
+- `failed`: verification or workflow failed; include failure evidence and recovery path.
+- `userinterlude`: user paused/interrupted; do not auto-continue without explicit restart.
+- `askuserQuestion`: one blocking user answer is required; ask the concrete question and record state.
+Do not end terminal handoffs with optional softeners or permission-handoff phrasing.
+</Terminal_Handoff>
+
+
+<Repo_Aware_DAG_Update>
+When a prior `ralplan`/PRD creates a Team DAG handoff, use it only after an explicit invocation match. Do not consume ambient stale DAG files.
+
+Adapted OpenClaw contract:
+1. Resolve the latest approved PRD/test-spec pair for the same slug.
+2. Prefer `.oh-my-openclaw/plans/team-dag-{slug}.json`; otherwise parse a fenced `Team DAG Handoff` block from the PRD.
+3. Validate duplicate IDs and cycles before spawning workers.
+4. Convert symbolic dependencies into concrete worker/task labels before worker prompts are written.
+5. Keep the mapping and fallback reason in `.oh-my-openclaw/state/team/{team-id}/decomposition-report.json`.
+6. If no valid DAG exists, fall back to the existing text decomposition path and say so in the evidence.
+</Repo_Aware_DAG_Update>
 
 <Steps>
 

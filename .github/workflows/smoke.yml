@@ -33,7 +33,7 @@ jobs:
             echo 'question helper accepted an invalid path-like id'
             exit 1
           fi
-          python3 scripts/oh-my-openclaw-triage.py --state-root "$RUNNER_TEMP/triage-state" record --turn-id smoke-1 --no-suppress-followup "계획 먼저" > "$RUNNER_TEMP/triage.json"
+          python3 scripts/oh-my-openclaw-triage.py --state-root "$RUNNER_TEMP/triage-state" record --turn-id smoke-1 --no-suppress-followup "implement a complete workflow test harness" > "$RUNNER_TEMP/triage.json"
           grep -q '"suppress_followup": false' "$RUNNER_TEMP/triage.json"
 
   privacy-scan:
@@ -70,6 +70,9 @@ jobs:
               Path('docs/openclaw-config.md'),
               Path('docs/openclaw-skill-self-evolution-mvp.md'),
               Path('docs/release-imports-v0.14.0.md'),
+              Path('docs/release-imports-v0.14.4.md'),
+              Path('docs/release-imports-v0.15.0.md'),
+              Path('docs/visual-ralph.md'),
               Path('docs/state-model.md'),
               Path('docs/telegram-workflows.md'),
               Path('docs/terminology.md'),

@@ -8,6 +8,13 @@ user-invocable: true
 Use this skill to compare generated UI screenshots against one or more reference images and return a strict JSON verdict that can drive the next edit iteration.
 </Purpose>
 
+## GPT-5.5 Operating Contract
+
+- Start from the outcome: desired artifact/state, constraints, validation evidence, and stopping condition.
+- Use the smallest evidence loop that can make the next decision safely.
+- Ask one blocking question only when the answer would materially change architecture, safety, scope, or an external/destructive action.
+- Keep final reports concise: outcome, evidence, artifacts/state, and handoff.
+
 <Use_When>
 - The task includes visual fidelity requirements: layout, spacing, typography, component styling, hierarchy, or visual category.
 - You have a generated screenshot and at least one reference image.

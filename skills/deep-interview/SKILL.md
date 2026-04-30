@@ -29,6 +29,13 @@ Deep Interview is an intent-first Socratic clarification loop before planning or
 Execution quality is usually bottlenecked by intent clarity, not just missing implementation detail. A single expansion pass often misses why the user wants a change, where the scope should stop, which tradeoffs are unacceptable, and which decisions still require user approval. This workflow applies Socratic pressure + quantitative ambiguity scoring so orchestration modes begin with an explicit, testable, intent-aligned spec.
 </Why_This_Exists>
 
+<GPT55_Operating_Contract>
+- Start from the outcome: desired artifact/state, constraints, validation evidence, and stopping condition.
+- Use the smallest evidence loop that can make the next decision safely; do not expand phases merely because an older workflow template had them.
+- Ask one blocking question only when the answer would materially change architecture, safety, scope, or an external/destructive action.
+- Prefer concise, evidence-dense progress and final reports over status theater.
+</GPT55_Operating_Contract>
+
 <Depth_Profiles>
 - **Quick (`--quick`)**: fast pre-PRD pass; target threshold `<= 0.30`; max rounds 5
 - **Standard (`--standard`, default)**: full requirement interview; target threshold `<= 0.20`; max rounds 12
@@ -66,6 +73,17 @@ If no flag is provided, use **Standard**.
 - Respect requested depth profile behavior, especially quick-mode thresholds and round limits
 - Persist mode state for resume safety (write to `.oh-my-openclaw/state/deep-interview-state.json`)
 </Execution_Policy>
+
+
+<Terminal_Handoff>
+Use explicit terminal outcomes for workflow summaries:
+- `finished`: complete; include verification evidence and artifacts.
+- `blocked`: non-user prerequisite missing; name the blocker and required handoff.
+- `failed`: verification or workflow failed; include failure evidence and recovery path.
+- `userinterlude`: user paused/interrupted; do not auto-continue without explicit restart.
+- `askuserQuestion`: one blocking user answer is required; ask the concrete question and record state.
+Do not end terminal handoffs with optional softeners or permission-handoff phrasing.
+</Terminal_Handoff>
 
 <Steps>
 

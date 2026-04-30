@@ -28,6 +28,18 @@ Autopilot takes a brief product idea and autonomously handles the full lifecycle
 Most non-trivial software tasks require coordinated phases: understanding requirements, designing a solution, implementing in parallel, testing, and validating quality. Autopilot orchestrates all of these phases automatically so the user can describe what they want and receive working code without managing each step.
 </Why_This_Exists>
 
+<GPT55_Operating_Contract>
+- Start from the outcome: desired artifact/state, constraints, validation evidence, and stopping condition.
+- Use the smallest evidence loop that can make the next decision safely; do not expand phases merely because an older workflow template had them.
+- Ask one blocking question only when the answer would materially change architecture, safety, scope, or an external/destructive action.
+- Prefer concise, evidence-dense progress and final reports over status theater.
+</GPT55_Operating_Contract>
+
+
+<Upstream_Sync_Note>
+Upstream was checked against `Yeachan-Heo/oh-my-codex` `f0d9b3d0` (`0.15.1` line). Import portable workflow behavior only; keep this workspace on OpenClaw-native paths (`.oh-my-openclaw/`, `sessions_spawn`, local scripts) rather than raw upstream runtime or tmux assumptions unless Boss explicitly asks for that runtime.
+</Upstream_Sync_Note>
+
 <Execution_Policy>
 - Each phase must complete before the next begins
 - Parallel execution is used within phases where possible (Phase 2 and Phase 4)
@@ -39,6 +51,17 @@ Most non-trivial software tasks require coordinated phases: understanding requir
 - Continue through clear, low-risk, reversible next steps automatically; ask only when the next step is materially branching, destructive, or preference-dependent, and do not create needless permission prompts for routine reversible work
 - On safe execution branches, do not hand permission back with weak optional wording; continue and report the action/result directly
 </Execution_Policy>
+
+
+<Terminal_Handoff>
+Use explicit terminal outcomes for workflow summaries:
+- `finished`: complete; include verification evidence and artifacts.
+- `blocked`: non-user prerequisite missing; name the blocker and required handoff.
+- `failed`: verification or workflow failed; include failure evidence and recovery path.
+- `userinterlude`: user paused/interrupted; do not auto-continue without explicit restart.
+- `askuserQuestion`: one blocking user answer is required; ask the concrete question and record state.
+Do not end terminal handoffs with optional softeners or permission-handoff phrasing.
+</Terminal_Handoff>
 
 <Steps>
 

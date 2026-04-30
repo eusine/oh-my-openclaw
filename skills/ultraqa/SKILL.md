@@ -26,6 +26,13 @@ UltraQA is a QA cycling workflow. It runs build and test commands, collects fail
 After implementation, there are typically several failing tests. Fixing them one at a time is slow. UltraQA runs all checks simultaneously, identifies all failures in one pass, fixes them in parallel, and re-verifies — reducing the total number of round-trips needed to reach a clean state.
 </Why_This_Exists>
 
+<GPT55_Operating_Contract>
+- Start from the outcome: desired artifact/state, constraints, validation evidence, and stopping condition.
+- Use the smallest evidence loop that can make the next decision safely; do not expand phases merely because an older workflow template had them.
+- Ask one blocking question only when the answer would materially change architecture, safety, scope, or an external/destructive action.
+- Prefer concise, evidence-dense progress and final reports over status theater.
+</GPT55_Operating_Contract>
+
 <Execution_Policy>
 - Run all check commands simultaneously (build, lint, typecheck, test)
 - Collect ALL failures from a single pass before fixing any of them
@@ -36,6 +43,17 @@ After implementation, there are typically several failing tests. Fixing them one
 - Use `--fail-fast` to stop at first cycle with any failure (useful for quick iterations)
 - Keep fixing and re-verifying on safe local branches without phrasing the next step as optional user permission
 </Execution_Policy>
+
+
+<Terminal_Handoff>
+Use explicit terminal outcomes for workflow summaries:
+- `finished`: complete; include verification evidence and artifacts.
+- `blocked`: non-user prerequisite missing; name the blocker and required handoff.
+- `failed`: verification or workflow failed; include failure evidence and recovery path.
+- `userinterlude`: user paused/interrupted; do not auto-continue without explicit restart.
+- `askuserQuestion`: one blocking user answer is required; ask the concrete question and record state.
+Do not end terminal handoffs with optional softeners or permission-handoff phrasing.
+</Terminal_Handoff>
 
 <Steps>
 

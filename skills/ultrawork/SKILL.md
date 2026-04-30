@@ -31,6 +31,13 @@ Use ultrawork when independent work can run concurrently and close with lightwei
 Sequential task execution wastes time when tasks are independent. Ultrawork keeps the execution branch fast while tightening the protocol: gather enough context first, define pass/fail acceptance criteria before editing, decide deliberately between local execution and delegation, and finish with evidence rather than vibes.
 </Why_This_Exists>
 
+<GPT55_Operating_Contract>
+- Start from the outcome: desired artifact/state, constraints, validation evidence, and stopping condition.
+- Use the smallest evidence loop that can make the next decision safely; do not expand phases merely because an older workflow template had them.
+- Ask one blocking question only when the answer would materially change architecture, safety, scope, or an external/destructive action.
+- Prefer concise, evidence-dense progress and final reports over status theater.
+</GPT55_Operating_Contract>
+
 <Execution_Policy>
 - Gather enough context before implementation: task intent, desired outcome, constraints, likely touchpoints, and uncertainties that would change the execution path.
 - If uncertainty is still material after a quick repo read, run a focused evidence pass before editing.
@@ -44,8 +51,19 @@ Sequential task execution wastes time when tasks are independent. Ultrawork keep
 - Run quick commands such as git status, file reads, and simple checks in the foreground.
 - Default to concise, evidence-dense progress and completion reporting. If a lane is speculative or blocked, say so explicitly.
 - Treat newer user task updates as local overrides for the active workflow branch while preserving earlier non-conflicting constraints.
-- If the user says `continue` after ultrawork already has a clear next step, continue the current execution branch instead of restarting planning or asking for reconfirmation.
+- Treat safe continuation as the default: if the user says `continue` after ultrawork already has a clear next step, continue the current execution branch instead of restarting planning or asking for reconfirmation.
 </Execution_Policy>
+
+
+<Terminal_Handoff>
+Use explicit terminal outcomes for workflow summaries:
+- `finished`: complete; include verification evidence and artifacts.
+- `blocked`: non-user prerequisite missing; name the blocker and required handoff.
+- `failed`: verification or workflow failed; include failure evidence and recovery path.
+- `userinterlude`: user paused/interrupted; do not auto-continue without explicit restart.
+- `askuserQuestion`: one blocking user answer is required; ask the concrete question and record state.
+Do not end terminal handoffs with optional softeners or permission-handoff phrasing.
+</Terminal_Handoff>
 
 <Steps>
 1. **Context + certainty check**

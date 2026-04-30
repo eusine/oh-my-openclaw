@@ -8,6 +8,14 @@ user-invocable: true
 
 Use this skill when the user wants OpenClaw to build, restyle, or clone frontend UI through a measured visual loop: an approved generated reference, static reference, or live URL-derived baseline becomes the target; `ralph` implements; `visual-verdict` and optional pixel-diff evidence drive iteration.
 
+
+## GPT-5.5 Operating Contract
+
+- Start from the outcome: desired artifact/state, constraints, validation evidence, and stopping condition.
+- Use the smallest evidence loop that can make the next decision safely.
+- Ask one blocking question only when the answer would materially change architecture, safety, scope, or an external/destructive action.
+- Keep final reports concise: outcome, evidence, artifacts/state, and handoff.
+
 ## Purpose
 
 Create a measured frontend delivery loop:
@@ -32,6 +40,11 @@ This is an orchestration skill. It composes existing OpenClaw tools/skills and m
 - The task is non-visual backend/API implementation with no UI reference target.
 - The user already supplied a final static reference image and only needs comparison/fixes; hand directly to `ralph` with `visual-verdict` guidance.
 - The requested output is a deterministic SVG/vector/code-native asset rather than a raster reference.
+
+
+<Visual_Ralph_Upstream_Update>
+Treat Visual Ralph as the first-class UI fidelity workflow. URL-driven clone/restyle work stays here, with `visual-verdict` before every next edit and an approved reference/baseline before implementation. Do not revive standalone web-clone routing for new work.
+</Visual_Ralph_Upstream_Update>
 
 ## Workflow
 

@@ -30,6 +30,18 @@ Ralph is not autopilot. It is the execution and persistence engine. Use ralph di
 Complex tasks rarely complete in a single pass. Tools fail, tests reveal issues, implementations need adjustment. Ralph provides the persistence layer that keeps work moving forward through these normal obstacles, with verification gates to ensure quality before declaring completion.
 </Why_This_Exists>
 
+<GPT55_Operating_Contract>
+- Start from the outcome: desired artifact/state, constraints, validation evidence, and stopping condition.
+- Use the smallest evidence loop that can make the next decision safely; do not expand phases merely because an older workflow template had them.
+- Ask one blocking question only when the answer would materially change architecture, safety, scope, or an external/destructive action.
+- Prefer concise, evidence-dense progress and final reports over status theater.
+</GPT55_Operating_Contract>
+
+
+<Upstream_Sync_Note>
+Upstream was checked against `Yeachan-Heo/oh-my-codex` `f0d9b3d0` (`0.15.1` line). Import portable workflow behavior only; keep this workspace on OpenClaw-native paths (`.oh-my-openclaw/`, `sessions_spawn`, local scripts) rather than raw upstream runtime or tmux assumptions unless Boss explicitly asks for that runtime.
+</Upstream_Sync_Note>
+
 <Execution_Policy>
 - Delegate independent subtasks to subagents in parallel — never serialize parallel-safe work
 - Background long-running operations (builds, installs, tests) using background execution
@@ -42,6 +54,17 @@ Complex tasks rarely complete in a single pass. Tools fail, tests reveal issues,
 - Persist state after each iteration for session resume safety
 - Keep driving safe reversible work without permission-handoff phrasing; ask only when a real blocker, destructive branch, or scope-changing choice appears
 </Execution_Policy>
+
+
+<Terminal_Handoff>
+Use explicit terminal outcomes for workflow summaries:
+- `finished`: complete; include verification evidence and artifacts.
+- `blocked`: non-user prerequisite missing; name the blocker and required handoff.
+- `failed`: verification or workflow failed; include failure evidence and recovery path.
+- `userinterlude`: user paused/interrupted; do not auto-continue without explicit restart.
+- `askuserQuestion`: one blocking user answer is required; ask the concrete question and record state.
+Do not end terminal handoffs with optional softeners or permission-handoff phrasing.
+</Terminal_Handoff>
 
 <Steps>
 

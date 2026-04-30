@@ -28,6 +28,13 @@ Ralplan is a structured consensus planning workflow. It runs a planner → archi
 Planning quality determines execution quality. A plan reviewed by only the planner misses architectural blind spots, over-engineering risks, and test coverage gaps. A planner → architect → critic cycle catches these before implementation, producing a plan that multiple perspectives have validated.
 </Why_This_Exists>
 
+<GPT55_Operating_Contract>
+- Start from the outcome: desired artifact/state, constraints, validation evidence, and stopping condition.
+- Use the smallest evidence loop that can make the next decision safely; do not expand phases merely because an older workflow template had them.
+- Ask one blocking question only when the answer would materially change architecture, safety, scope, or an external/destructive action.
+- Prefer concise, evidence-dense progress and final reports over status theater.
+</GPT55_Operating_Contract>
+
 <Pre_Execution_Gate>
 Before starting the planning cycle, apply the pre-execution gate:
 
@@ -55,6 +62,17 @@ If a deep-interview spec exists at `.oh-my-openclaw/specs/deep-interview-{slug}.
 - **Deliberate (`--deliberate`)**: RALPLAN-DR structured deliberation — highest rigor for high-stakes decisions
 - **Direct (`--direct <spec-path>`)**: skip the interview/expansion, use the provided spec as input directly
 </Depth_Profiles>
+
+
+<Terminal_Handoff>
+Use explicit terminal outcomes for workflow summaries:
+- `finished`: complete; include verification evidence and artifacts.
+- `blocked`: non-user prerequisite missing; name the blocker and required handoff.
+- `failed`: verification or workflow failed; include failure evidence and recovery path.
+- `userinterlude`: user paused/interrupted; do not auto-continue without explicit restart.
+- `askuserQuestion`: one blocking user answer is required; ask the concrete question and record state.
+Do not end terminal handoffs with optional softeners or permission-handoff phrasing.
+</Terminal_Handoff>
 
 <Steps>
 
