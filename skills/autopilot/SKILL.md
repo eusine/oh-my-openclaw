@@ -1,256 +1,141 @@
 ---
 name: autopilot
-description: "Full autonomous execution from idea to working code. Handles requirements expansion, consensus planning, parallel implementation, QA cycling, and multi-perspective validation."
-argument-hint: "<idea, task description, or spec path>"
+description: "Strict autonomous loop: ralplan -> ralph -> code-review, with review-gated return to planning."
+argument-hint: "<idea, task description, issue, or spec path>"
 user-invocable: true
 ---
 
 <Purpose>
-Autopilot takes a brief product idea and autonomously handles the full lifecycle: requirements analysis, technical design, planning, parallel implementation, QA cycling, and multi-perspective validation. It produces working, verified code from a 2-3 line description.
+Autopilot is the strict autonomous delivery loop for non-trivial implementation work. Its primary contract is exactly:
+
+```text
+ralplan -> ralph -> code-review
+```
+
+If `code-review` is not clean, Autopilot returns to `ralplan` with the review findings as first-class planning input, then continues again through `ralph` and `code-review` until the review is clean or a hard blocker is reported.
 </Purpose>
 
 <Use_When>
-- User wants end-to-end autonomous execution from an idea to working code
-- User says "autopilot", "auto pilot", "autonomous", "build me", "create me", "make me", "full auto", "handle it all", or "I want a/an..."
-- Task requires multiple phases: planning, coding, testing, and validation
-- User wants hands-off execution and is willing to let the system run to completion
+- User wants hands-off execution from a concrete idea, issue, PRD, or requirements artifact to reviewed code.
+- User says `autopilot`, `auto pilot`, `autonomous`, `build me`, `create me`, `make me`, `full auto`, or `handle it all`.
+- Task needs planning, implementation, verification, and code review with automatic follow-up when review is not clean.
 </Use_When>
 
 <Do_Not_Use_When>
-- User wants to explore options or brainstorm, use a lightweight thinking pass instead
-- User says "just explain", "draft only", or "what would you suggest" — respond conversationally
-- User wants a single focused code change — use `ralph` or delegate to an executor subagent
-- User wants to review or critique an existing plan, use a review pass instead
-- Task is a quick fix or small bug — use direct executor delegation
+- User wants to explore options or brainstorm — use `ralplan` or a lightweight planning pass.
+- User says `just explain`, `draft only`, or `what would you suggest` — respond conversationally.
+- User wants a single focused code change — use `ralph` or direct execution.
+- User wants only review/critique of existing code — use `code-review`.
 </Do_Not_Use_When>
 
-<Why_This_Exists>
-Most non-trivial software tasks require coordinated phases: understanding requirements, designing a solution, implementing in parallel, testing, and validating quality. Autopilot orchestrates all of these phases automatically so the user can describe what they want and receive working code without managing each step.
-</Why_This_Exists>
+<Strict_Loop_Contract>
+Autopilot must not run a separate broad expansion/planning/execution/QA/validation lifecycle as its primary behavior. It delegates those concerns to the canonical phases below:
 
-<GPT55_Operating_Contract>
-- Start from the outcome: desired artifact/state, constraints, validation evidence, and stopping condition.
-- Use the smallest evidence loop that can make the next decision safely; do not expand phases merely because an older workflow template had them.
-- Ask one blocking question only when the answer would materially change architecture, safety, scope, or an external/destructive action.
-- Prefer concise, evidence-dense progress and final reports over status theater.
-</GPT55_Operating_Contract>
+1. **Phase `ralplan` — consensus planning gate**
+   - Ground the task with pre-context intake.
+   - Produce or update PRD / technical plan / test-spec artifacts.
+   - When returning from a non-clean review, include `return_to_ralplan_reason` and review findings as planning input.
+   - Required handoff artifact: an approved plan/test spec suitable for `ralph`.
 
+2. **Phase `ralph` — implementation + verification loop**
+   - Implement from the approved `ralplan` artifacts.
+   - Own implementation, tests, build/lint/typecheck evidence, and verification.
+   - Required handoff artifact: implementation evidence and changed-file summary suitable for `code-review`.
 
-<Upstream_Sync_Note>
-Upstream was checked against `Yeachan-Heo/oh-my-codex` `f0d9b3d0` (`0.15.1` line). Import portable workflow behavior only; keep this workspace on OpenClaw-native paths (`.oh-my-openclaw/`, `sessions_spawn`, local scripts) rather than raw upstream runtime or tmux assumptions unless Boss explicitly asks for that runtime.
-</Upstream_Sync_Note>
+3. **Phase `code-review` — merge-readiness gate**
+   - Review the diff/artifacts produced by `ralph`.
+   - A clean review means final recommendation `APPROVE` with architectural status `CLEAR`.
+   - `COMMENT`, `REQUEST CHANGES`, architectural `WATCH`/`BLOCK`, or unresolved findings are not clean.
+   - If not clean, increment the review cycle, persist `review_verdict`, set `return_to_ralplan_reason`, and transition back to `ralplan`.
 
-<Execution_Policy>
-- Each phase must complete before the next begins
-- Parallel execution is used within phases where possible (Phase 2 and Phase 4)
-- QA cycles repeat up to 5 times; if the same root issue persists across 3 cycles, stop and report the fundamental issue instead of looping on superficial retries
-- Validation requires approval from all reviewers; rejected items get fixed and re-validated
-- If a deep-interview spec exists, use it as high-clarity phase input instead of re-expanding from scratch
-- If input is too vague for reliable expansion, first try one targeted clarifying question or one reasonable assumption; only offer/trigger `deep-interview` when ambiguity would still create costly rework
-- Default to concise, evidence-dense progress and completion reporting, cite concrete files changed, checks run, outputs, and blockers when reporting progress, and avoid repetitive status chatter or verbose status spam
-- Continue through clear, low-risk, reversible next steps automatically; ask only when the next step is materially branching, destructive, or preference-dependent, and do not create needless permission prompts for routine reversible work
-- On safe execution branches, do not hand permission back with weak optional wording; continue and report the action/result directly
-</Execution_Policy>
+The only normal terminal state is `complete` after a clean code review. Cancellation, blocked credentials, repeated unrecoverable failures, or explicit user stop may terminate earlier with preserved state.
+</Strict_Loop_Contract>
 
+<OpenClaw_Translation>
+This skill imports the portable workflow behavior from OMX without copying Codex/tmux runtime assumptions.
 
-<Terminal_Handoff>
-Use explicit terminal outcomes for workflow summaries:
-- `finished`: complete; include verification evidence and artifacts.
-- `blocked`: non-user prerequisite missing; name the blocker and required handoff.
-- `failed`: verification or workflow failed; include failure evidence and recovery path.
-- `userinterlude`: user paused/interrupted; do not auto-continue without explicit restart.
-- `askuserQuestion`: one blocking user answer is required; ask the concrete question and record state.
-Do not end terminal handoffs with optional softeners or permission-handoff phrasing.
-</Terminal_Handoff>
+- Runtime state lives under `.oh-my-openclaw/`, not `.omx/`.
+- Use OpenClaw first-class tools and subagents (`sessions_spawn`, tests, file inspection, and direct evidence) rather than raw tmux/hook assumptions.
+- External/public/destructive writes still require user approval.
+- Keep one user-facing thread; delegate work only when it materially improves speed or quality.
+</OpenClaw_Translation>
 
-<Steps>
-
-## Pre-Context Intake (required before Phase 0)
-
+<Pre_Context_Intake>
+Before Phase `ralplan` starts or resumes:
 1. Derive a task slug from the request.
-2. Load the latest relevant snapshot from `.oh-my-openclaw/context/{slug}-*.md` when available.
-3. If no snapshot exists, create `.oh-my-openclaw/context/{slug}-{timestamp}.md` (UTC `YYYYMMDDTHHMMSSZ`) with:
-   - Task statement
-   - Desired outcome
-   - Known facts/evidence
-   - Constraints
-   - Unknowns/open questions
-   - Likely codebase touchpoints
-4. If ambiguity remains high, use direct file search tools for brownfield facts, identify the concrete missing requirements, ask at most one high-leverage clarifying question when that should unblock the task, and run `deep-interview --quick <task>` only when ambiguity still remains too costly. Do not jump straight to coding from a vague request.
-5. Initialize state — write to `.oh-my-openclaw/state/autopilot-state.json`:
+2. Reuse the latest relevant `.oh-my-openclaw/context/{slug}-*.md` snapshot when available.
+3. If none exists, create `.oh-my-openclaw/context/{slug}-{timestamp}.md` (UTC `YYYYMMDDTHHMMSSZ`) with:
+   - task statement
+   - desired outcome
+   - known facts/evidence
+   - constraints
+   - unknowns/open questions
+   - likely codebase touchpoints
+4. If ambiguity remains high, inspect the codebase/docs first, then ask one blocking question or run a quick `deep-interview` only when ambiguity would cause costly rework.
+5. Carry the snapshot path in Autopilot state and all handoff artifacts.
+</Pre_Context_Intake>
+
+<State_Management>
+State file: `.oh-my-openclaw/state/autopilot-state.json`.
+
+Recommended shape:
 
 ```json
 {
-  "active": true,
   "mode": "autopilot",
-  "current_phase": "expansion",
-  "started_at": "<ISO timestamp>",
-  "state": {
-    "slug": "<slug>",
+  "active": true,
+  "current_phase": "ralplan",
+  "iteration": 1,
+  "review_cycle": 0,
+  "max_iterations": 10,
+  "phase_cycle": ["ralplan", "ralph", "code-review"],
+  "handoff_artifacts": {
     "context_snapshot_path": ".oh-my-openclaw/context/<slug>-<timestamp>.md",
-    "qa_cycle": 0,
-    "max_qa_cycles": 5,
-    "validation_round": 0,
-    "max_validation_rounds": 3
-  }
+    "ralplan": null,
+    "ralph": null,
+    "code_review": null
+  },
+  "review_verdict": null,
+  "return_to_ralplan_reason": null,
+  "updated_at": "<ISO timestamp>"
 }
 ```
 
-## Phase 0 — Expansion: Turn the idea into a detailed spec
-
-- If `.oh-my-openclaw/specs/deep-interview-{slug}.md` exists: reuse it and skip redundant expansion unless there is a newly discovered blocker or gap. Do not re-expand from scratch when the existing spec is still valid.
-- If prompt is highly vague: first ask one high-leverage clarifying question or make one safe assumption; route to `deep-interview --quick` only if the task would still be poorly specified after that
-- Spawn analyst subagent (thorough tier): extract requirements
-- Spawn architect subagent (thorough tier): create technical specification
-- Output: `.oh-my-openclaw/plans/autopilot-spec.md`
-- Update state: `current_phase: "planning"`
-
-## Phase 1 — Planning: Create implementation plan from spec
-
-- Spawn architect subagent (thorough tier): create plan (no interview, direct mode)
-- Spawn critic subagent (thorough tier): validate plan
-- Revise plan if critic raises blocking issues
-- Output: `.oh-my-openclaw/plans/autopilot-impl.md`
-- Update state: `current_phase: "execution"`
-
-## Phase 2 — Execution: Implement the plan
-
-Delegate using `ralph` for persistence or `ultrawork` for parallel batch:
-
-- Route subtasks by complexity:
-  - Simple lookups/writes → executor (standard tier)
-  - Standard implementation → executor (standard tier)
-  - Complex analysis/refactoring → executor (thorough tier) or architect
-- Run independent tasks in parallel simultaneously
-- Background long-running operations (builds, installs)
-- Update state: `current_phase: "qa"` when implementation complete
-
-## Phase 3 — QA: Cycle until all tests pass
-
-Run `ultraqa` internally:
-
-1. Build → lint → test
-2. Collect failures
-3. Fix failures via parallel executor subagents
-4. Re-run to verify
-5. Repeat up to `max_qa_cycles` (default 5)
-6. Treat repeated failures by root-cause pattern, not by noisy surface symptoms
-7. Do not brute-force an infinite retry loop or disguise the same failure as a new issue just to keep cycling
-8. If same error persists across 3 cycles → stop and report fundamental issue
-9. Update state: `current_phase: "validation"` when QA passes
-
-## Phase 4 — Validation: Multi-perspective review in parallel
-
-Spawn all reviewers simultaneously:
-
-- **Architect subagent**: functional completeness review
-- **Security-reviewer subagent**: vulnerability check
-- **Code-reviewer subagent**: quality review
-
-All must approve. On rejection:
-1. Fix the specific issues raised
-2. Increment `validation_round`
-3. Re-validate with the reviewing subagent
-4. If `validation_round >= max_validation_rounds` → stop and escalate to user
-
-Update state: `current_phase: "cleanup"` when all reviewers approve.
-
-## Phase 5 — Cleanup: Clear state and report
-
-1. Update state: `active: false`, `current_phase: "complete"`, `completed_at: "<timestamp>"`
-2. Remove or archive `.oh-my-openclaw/state/autopilot-state.json`
-3. Report completion:
-   - Summary of what was built
-   - Files created/modified
-   - Test results
-   - Validation outcomes
-   - Any known follow-up items
-
-</Steps>
-
-<State_Management>
-State file: `{workspace}/.oh-my-openclaw/state/autopilot-state.json`
-
-- **On start:** write initial state with `active: true`, `current_phase: "expansion"`, `updated_at: <ISO timestamp>`
-- **On phase transitions:** update `current_phase` and **always update `updated_at`**
-- **On QA cycles:** increment `qa_cycle`, update `updated_at`
-- **On validation rounds:** increment `validation_round`, update `updated_at`
-- **On completion:** set `active: false`, `completed_at`, `updated_at`
-- **On resume:** read existing state, verify phase output artifacts exist before continuing, then continue from last phase
-
-**`updated_at` is required on every write.** The oh-my-openclaw harness hook uses it to distinguish live vs abandoned states (> 48h = stale warning).
-
-**Atomic write pattern:** write state to a temp file (`.oh-my-openclaw/state/autopilot-state.json.tmp`), then rename to final path. This prevents partial-write corruption on crash.
-
-**Resume verification:** before resuming a phase, confirm its expected output exists (e.g., phase `execution` should have `.oh-my-openclaw/plans/autopilot-impl.md`). If output is missing, re-run that phase rather than skipping it.
+- On every write, update `updated_at`.
+- Use atomic writes: write a temp file, then rename to final path.
+- On `ralplan -> ralph`, persist approved planning/test artifacts.
+- On `ralph -> code-review`, persist implementation/test evidence.
+- On clean review, set `active:false`, `current_phase:"complete"`, `completed_at`, and `review_verdict.clean:true`.
+- On non-clean review, increment `iteration` and `review_cycle`, set `current_phase:"ralplan"`, persist review artifacts, and set `return_to_ralplan_reason`.
+- On cancellation, preserve progress for resume rather than deleting handoff artifacts.
 </State_Management>
 
-<Escalation_And_Stop_Conditions>
-- Stop when the same QA error persists across 3 cycles (fundamental issue)
-- Stop when validation keeps failing after `max_validation_rounds` rounds
-- Stop when user says "stop", "cancel", or "abort"
-- If requirements were too vague and expansion produces an unclear spec, pause and redirect to `deep-interview`
-</Escalation_And_Stop_Conditions>
+<Continuation_And_Resume>
+When the user says `continue`, `resume`, or `keep going` while Autopilot is active, read `autopilot-state.json` and continue from `current_phase`:
+
+- `ralplan`: update planning from current handoffs and any `return_to_ralplan_reason`.
+- `ralph`: execute the approved plan and record fresh verification evidence.
+- `code-review`: review the current diff and decide clean vs return-to-ralplan.
+- `complete`: report completion evidence; do not restart.
+
+Do not restart discovery or discard handoff artifacts on continuation.
+</Continuation_And_Resume>
+
+<Execution_Policy>
+- Always execute phases in order: `ralplan`, then `ralph`, then `code-review`.
+- Never skip directly from vague/freeform expansion to implementation.
+- A non-clean `code-review` always returns to `ralplan`; do not patch findings ad hoc outside the loop.
+- Continue automatically through safe reversible phase transitions.
+- Ask only for destructive, external-production, credential-gated, or materially preference-dependent branches.
+- Stop and report when the same review or verification failure recurs across 3 review cycles with no meaningful new plan.
+</Execution_Policy>
 
 <Final_Checklist>
-- [ ] All 5 phases completed (Expansion, Planning, Execution, QA, Validation)
-- [ ] All validators approved in Phase 4
-- [ ] Tests pass (verified with fresh test run output)
-- [ ] Build succeeds (verified with fresh build output)
-- [ ] State files cleaned up
-- [ ] User informed of completion with summary of what was built
+- [ ] `ralplan` produced/updated approved planning artifacts.
+- [ ] `ralph` implemented and verified the plan with fresh evidence.
+- [ ] `code-review` returned a clean verdict (`APPROVE` + `CLEAR`).
+- [ ] `review_verdict.clean` is true and `return_to_ralplan_reason` is null.
+- [ ] Tests/build/lint/typecheck evidence is available in handoff artifacts.
+- [ ] Autopilot state is marked `complete` or cancellation/blocker state is preserved coherently.
+- [ ] User receives a concise summary with plan, implementation, verification, and review evidence.
 </Final_Checklist>
-
-<Examples>
-<Good>
-User: "autopilot A REST API for a bookstore inventory with CRUD operations using TypeScript"
-Why: Specific domain, clear features, technology constraint. Autopilot has enough to expand into a full spec.
-</Good>
-
-<Good>
-User: "build me a CLI tool that tracks daily habits with streak counting"
-Why: Clear product concept with a specific feature. "build me" trigger activates autopilot.
-</Good>
-
-<Bad>
-User: "fix the bug in the login page"
-Why: Single focused fix, not a multi-phase project. Use direct executor delegation or ralph instead.
-</Bad>
-
-<Bad>
-User: "what are some good approaches for adding caching?"
-Why: Exploration or brainstorming request. Respond conversationally or use a lightweight thinking pass.
-</Bad>
-</Examples>
-
-<Tool_Usage>
-- Spawn analyst subagent (thorough) for Phase 0 requirements extraction
-- Spawn architect subagent (thorough) for Phase 0 spec + Phase 1 plan
-- Spawn critic subagent (thorough) for Phase 1 validation
-- Use `ralph` or `ultrawork` for Phase 2 execution delegation
-- Use `ultraqa` for Phase 3 QA cycling
-- Spawn architect, security-reviewer, code-reviewer subagents in parallel for Phase 4
-- Use file write tools for all artifact creation under `.oh-my-openclaw/`
-</Tool_Usage>
-
-<Recommended_Clarity_Pipeline>
-For ambiguous requests, prefer:
-
-```
-deep-interview → ralplan → autopilot
-```
-
-- `deep-interview`: ambiguity-gated Socratic requirements
-- `ralplan`: consensus planning (planner/architect/critic)
-- `autopilot`: execution + QA + validation
-</Recommended_Clarity_Pipeline>
-
-<Operational_Reinforcements>
-- Report concrete files changed, report checks run, report outputs produced, and report blockers plainly, including the decision needed when one exists.
-- Reuse existing spec as source of truth, resume from latest relevant snapshot, and use context snapshot before planning. Do not drift into blank-start restart.
-- Route vague input through deep-interview quick. Do not code immediately from ambiguous brief, and do not call exploration execution or brainstorming execution.
-- Launch long-running work in background, keep moving while background work runs, and preserve reversible next steps. Do not block the entire autopilot loop on background work.
-- Pause only for destructive steps or materially branching steps, not for a routine permission prompt.
-- Stop after 3 repeated failures and report root cause, not surface symptom.
-- Complete execution, QA, and validation before calling done. Do not skip validation or report partial progress as completion.
-</Operational_Reinforcements>

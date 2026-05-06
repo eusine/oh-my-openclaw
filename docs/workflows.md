@@ -22,8 +22,19 @@ Use when the task is clear and you want one persistent owner to keep iterating u
 
 ## autopilot
 
-Use when you want the full pipeline: expansion, planning, execution, QA, and validation.
-It may keep execution with one owner or fan out into `team` when the implementation phase is naturally partitionable.
+Use when you want the strict reviewed delivery loop: `ralplan -> ralph -> code-review`. A non-clean review returns to `ralplan` with review findings as planning input; do not patch around review findings outside the loop.
+
+## ultragoal
+
+Use when a long task should be split into durable auditable goals with explicit acceptance criteria, dependencies, ledgers, and completion evidence.
+
+## performance-goal
+
+Use when the objective is measurable optimization and no work should start until an evaluator contract and baseline exist.
+
+## autoresearch-goal
+
+Use when a research mission needs durable source records, a professor/critic rubric, and a source-backed final report.
 
 ## ultrawork
 
@@ -56,4 +67,7 @@ Use inside visual implementation loops when a generated screenshot must be judge
 | `team` | parallel workers genuinely help | leader + worker subagents |
 | `visual-ralph` | UI implementation needs visual fidelity | approved reference -> Ralph -> verdict loop |
 | `visual-verdict` | screenshot/reference comparison is needed | strict JSON visual QA |
-| `autopilot` | the whole lifecycle should be managed end to end | expansion -> planning -> execution -> QA -> validation |
+| `autopilot` | implementation needs reviewed autonomous delivery | ralplan -> ralph -> code-review |
+| `ultragoal` | long work needs durable auditable objectives | goals.json + ledger + evidence |
+| `performance-goal` | optimization must be evaluator-gated | baseline -> patch -> measure -> regressions |
+| `autoresearch-goal` | research must be source-backed and rubric-checked | mission -> sources -> critic -> report |

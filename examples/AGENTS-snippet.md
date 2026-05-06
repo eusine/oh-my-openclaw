@@ -15,6 +15,9 @@ This workspace uses Oh My OpenClaw as a durable workflow layer on top of OpenCla
 - `ralplan`
 - `ralph`
 - `autopilot`
+- `ultragoal`
+- `performance-goal`
+- `autoresearch-goal`
 - `ultrawork`
 - `ultraqa`
 - `team`
@@ -24,6 +27,8 @@ This workspace uses Oh My OpenClaw as a durable workflow layer on top of OpenCla
 ### Runtime state
 
 Persist workflow state under: `{workspace}/.oh-my-openclaw/state/`
+
+Persist durable goal artifacts under: `{workspace}/.oh-my-openclaw/goals/`
 
 ### Optional profile term
 

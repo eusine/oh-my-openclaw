@@ -64,6 +64,9 @@ Keep the lineage explicit when you publish or announce the repo.
 - `ralplan`
 - `ralph`
 - `autopilot`
+- `ultragoal`
+- `performance-goal`
+- `autoresearch-goal`
 - `ultrawork`
 - `ultraqa`
 - `team`
@@ -129,7 +132,9 @@ In a real workspace, the clean cutover pattern is not "rename everything and pra
 - `docs/self-improvement.md`
 - `docs/team-operating-model.md`
 - `docs/visual-ralph.md`
+- `docs/goal-workflows.md`
 - `docs/release-imports-v0.15.0.md`
+- `docs/release-imports-v0.16.0.md`
 - `docs/telegram-workflows.md`
 - `docs/private-vs-public.md`
 - `docs/install.md`
