@@ -1,6 +1,6 @@
 # USER.md
 
-- Name: Boss
+- Name: User
 - Timezone: Your/Timezone
 
 ## Preferences
