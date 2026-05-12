@@ -15,7 +15,7 @@ Team is the right choice for large tasks where the work is naturally partitionab
 - User says "team", "swarm", "coordinated team", "coordinated swarm"
 - Task is large enough to benefit from true parallel ownership (multiple files, multiple subsystems)
 - Work can be cleanly decomposed into independent partitions
-- There is a coordinator role (Hina/orchestrator) managing multiple executor workers
+- There is a coordinator role (leader/orchestrator) managing multiple executor workers
 - Called by `autopilot` Phase 2 when task is large enough to justify team execution
 </Use_When>
 
