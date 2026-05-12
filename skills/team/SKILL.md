@@ -39,7 +39,7 @@ Some tasks are genuinely large — implementing a full feature across multiple s
 
 
 <Upstream_Sync_Note>
-Upstream was checked against `Yeachan-Heo/oh-my-codex` `f0d9b3d0` (`0.15.1` line). Import portable workflow behavior only; keep this workspace on OpenClaw-native paths (`.oh-my-openclaw/`, `sessions_spawn`, local scripts) rather than raw upstream runtime or tmux assumptions unless Boss explicitly asks for that runtime.
+Upstream was checked against `Yeachan-Heo/oh-my-codex` `v0.16.4`. Import portable workflow behavior only; keep this workspace on OpenClaw-native paths (`.oh-my-openclaw/`, OpenClaw subagents/sessions, local scripts) rather than raw upstream runtime, tmux, Codex hooks, HUD, or MCP assumptions unless explicitly requested.
 </Upstream_Sync_Note>
 
 <Execution_Policy>
@@ -47,6 +47,7 @@ Upstream was checked against `Yeachan-Heo/oh-my-codex` `f0d9b3d0` (`0.15.1` line
 - Default worker count: 3 (adjust based on task decomposability)
 - Each worker owns a non-overlapping partition — no shared mutable state between workers
 - Coordinator (main session / orchestrator) manages overall progress and user-facing synthesis
+- Preserve approved handoff context during scale-up: PRD/test-spec refs, context snapshot refs, selected handoffs, launch hints, and verification path must be included in each worker prompt where relevant
 - Prefer OpenClaw-native subagent announces over polling loops; completion should come back to the requester channel automatically
 - Treat OpenClaw background tasks as the activity ledger, not as the primary team control plane
 - Use hooks only for lightweight lifecycle glue, not as the core team runtime
@@ -114,6 +115,13 @@ Spawn an architect subagent to decompose the task into N parallel partitions:
   "worker_count": 3,
   "agent_role": "executor",
   "spec_path": ".oh-my-openclaw/specs/<slug>.md",
+  "approved_handoff": {
+    "prd_path": null,
+    "test_spec_path": null,
+    "context_snapshot_path": null,
+    "launch_hint": null,
+    "verification_path": []
+  },
   "partitions": [
     {
       "id": "w1",

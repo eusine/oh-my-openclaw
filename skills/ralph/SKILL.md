@@ -39,7 +39,7 @@ Complex tasks rarely complete in a single pass. Tools fail, tests reveal issues,
 
 
 <Upstream_Sync_Note>
-Upstream was checked against `Yeachan-Heo/oh-my-codex` `f0d9b3d0` (`0.15.1` line). Import portable workflow behavior only; keep this workspace on OpenClaw-native paths (`.oh-my-openclaw/`, `sessions_spawn`, local scripts) rather than raw upstream runtime or tmux assumptions unless Boss explicitly asks for that runtime.
+Upstream was checked against `Yeachan-Heo/oh-my-codex` `v0.16.4`. Import portable workflow behavior only; keep this workspace on OpenClaw-native paths (`.oh-my-openclaw/`, OpenClaw subagents/sessions, local scripts) rather than raw upstream runtime, tmux, Codex goal-tool, hook, HUD, or MCP assumptions unless explicitly requested.
 </Upstream_Sync_Note>
 
 <Execution_Policy>
@@ -47,6 +47,7 @@ Upstream was checked against `Yeachan-Heo/oh-my-codex` `f0d9b3d0` (`0.15.1` line
 - Background long-running operations (builds, installs, tests) using background execution
 - Verify after every execution round before moving to the next iteration
 - Fix issues found during verification before reporting completion
+- Preserve approved execution context when Ralph is launched from `ralplan`, `autopilot`, or `team`: approved PRD/test-spec paths, context snapshot refs, launch hints, and acceptance criteria should be copied into the Ralph state/context snapshot instead of inferred from stale ambient files
 - Apply deslop pass by default after execution (skip with `--no-deslop`)
 - Iterate until all acceptance criteria are met or a fundamental blocker is discovered
 - Do not execute ambiguous work immediately, clarify or redirect first when the task is still underspecified
@@ -80,6 +81,7 @@ Do not end terminal handoffs with optional softeners or permission-handoff phras
    - Task statement and acceptance criteria
    - Known codebase touchpoints
    - Constraints and non-goals
+   - Approved upstream handoff refs when present: PRD/test spec, context pack, launch hints, and verification path
 6. Initialize state — write to `.oh-my-openclaw/state/ralph-state.json`:
 
 ```json
@@ -160,7 +162,21 @@ When acceptance criteria appear met:
 2. If architect approves → proceed to Phase 7.
 3. If architect raises issues → fix them, re-verify (Phase 5), then re-run architect check.
 
-## Phase 7: Deslop Pass (unless `--no-deslop`)
+## Phase 7: Completion Audit Evidence
+
+Before cleanup or final reporting, write concrete audit evidence into state or an evidence file:
+
+- acceptance criteria checked;
+- changed files inspected;
+- verification commands and results;
+- review/architect findings;
+- known residual risks.
+
+Do not mark Ralph complete from state flags alone. Completion needs audit evidence tied to actual files, commands, or reviewer output.
+
+After audit evidence is recorded, proceed to Phase 8.
+
+## Phase 8: Deslop Pass (unless `--no-deslop`)
 
 1. Spawn a code-simplifier subagent to clean up AI-generated verbosity:
    - Remove unnecessary comments
@@ -169,13 +185,13 @@ When acceptance criteria appear met:
 2. Verify that deslop pass did not break functionality (quick re-test).
 3. If `--no-deslop` flag was set, skip this phase entirely.
 
-## Phase 8: Regression Re-Verification
+## Phase 9: Regression Re-Verification
 
 1. Run full test suite one final time with a clean environment.
 2. Confirm all tests pass after the deslop pass.
 3. If any regressions found → fix them before proceeding.
 
-## Phase 9: Completion
+## Phase 10: Completion
 
 1. Update state: `active: false`, `current_phase: "complete"`, `completed_at: "<timestamp>"`.
 2. Report completion with:

@@ -52,6 +52,7 @@ Sequential task execution wastes time when tasks are independent. Ultrawork keep
 - Default to concise, evidence-dense progress and completion reporting. If a lane is speculative or blocked, say so explicitly.
 - Treat newer user task updates as local overrides for the active workflow branch while preserving earlier non-conflicting constraints.
 - Treat safe continuation as the default: if the user says `continue` after ultrawork already has a clear next step, continue the current execution branch instead of restarting planning or asking for reconfirmation.
+- When called from an approved plan or team scale-up, preserve the approved handoff refs in each lane: source plan/spec path, context snapshot, acceptance criteria, non-goals, and verification path.
 </Execution_Policy>
 
 

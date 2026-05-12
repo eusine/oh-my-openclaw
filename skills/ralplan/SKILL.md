@@ -207,6 +207,18 @@ For high-stakes decisions, run RALPLAN-DR structured deliberation:
    - **Revise plan**: return to planner with new constraints
 3. Update state: `approved: true`, `active: false`, `completed_at: "<timestamp>"`.
 
+### Approved Handoff Metadata
+
+When the plan is approved, preserve handoff metadata explicitly in the plan summary and state:
+
+- canonical PRD and test-spec paths;
+- context snapshot path and any context-pack role refs;
+- selected execution route (`ralph`, `team`, `autopilot`, or direct);
+- exact launch hint text, preserving multiline commands;
+- verification path and non-goals.
+
+Execution modes must receive this metadata directly. Do not rely on the next workflow to rediscover approved context from latest-file heuristics.
+
 </Steps>
 
 <Output_Artifacts>

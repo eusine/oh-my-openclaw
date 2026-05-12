@@ -20,11 +20,19 @@ Runtime state lives under `.oh-my-openclaw/`.
 
 - state files should include `updated_at`
 - active workflows should be resumable
+- session-scoped workflow state is authoritative for the active session; root/global state is only a discovery or migration fallback
 - blocking user questions should have owned records under `.oh-my-openclaw/state/questions/`
 - required-question consumption should have a fail-closed ledger under `.oh-my-openclaw/state/question-obligations/`
 - advisory triage should stay advisory, and only remember the latest non-PASS route
 - runtime outputs should stay out of version control
+- durable project knowledge that should be committed belongs under repo-visible project docs or `oh-my-openclaw-wiki/`, not runtime state
 - examples in `examples/state/` are schemas, not live data
+
+## Session Authority
+
+When a workflow is running in a scoped session, read and write state under that session's resolved state root first. Do not auto-complete, resume, or visualize a workflow from stale root-level markers when a session-specific state root exists.
+
+Root-level `.oh-my-openclaw/state/*` remains useful for single-session workspaces and compatibility, but active boxed/background sessions must not inherit stale root completion state.
 
 ## Important caveat
 

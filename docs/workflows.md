@@ -28,6 +28,8 @@ Use when you want the strict reviewed delivery loop: `ralplan -> ralph -> code-r
 
 Use when a long task should be split into durable auditable goals with explicit acceptance criteria, dependencies, ledgers, and completion evidence.
 
+New ultragoal runs default to an aggregate whole-run objective with per-story OpenClaw ledger checkpoints. Final completion requires targeted verification, cleanup/deslop evidence, post-cleanup verification, and a clean review. Non-clean review becomes a new blocker-resolution story.
+
 ## performance-goal
 
 Use when the objective is measurable optimization and no work should start until an evaluator contract and baseline exist.

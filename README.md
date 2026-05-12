@@ -135,6 +135,7 @@ In a real workspace, the clean cutover pattern is not "rename everything and pra
 - `docs/goal-workflows.md`
 - `docs/release-imports-v0.15.0.md`
 - `docs/release-imports-v0.16.0.md`
+- `docs/release-imports-v0.16.4.md`
 - `docs/telegram-workflows.md`
 - `docs/private-vs-public.md`
 - `docs/install.md`

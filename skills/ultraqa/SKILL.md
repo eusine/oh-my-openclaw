@@ -38,6 +38,7 @@ After implementation, there are typically several failing tests. Fixing them one
 - Collect ALL failures from a single pass before fixing any of them
 - Fix independent failures in parallel via parallel executor subagents
 - Re-run FULL check suite after fixes — do not run partial checks
+- Keep QA state scoped to the active workflow/session. Do not inherit or complete from stale root-level state when a session-specific QA state exists.
 - Track consecutive failure patterns: if the same error appears 3 times, flag as fundamental
 - Stop when all checks pass or cycle limit reached (default 5 cycles, configurable)
 - Use `--fail-fast` to stop at first cycle with any failure (useful for quick iterations)

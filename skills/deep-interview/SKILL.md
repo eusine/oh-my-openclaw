@@ -62,6 +62,9 @@ If no flag is provided, use **Standard**.
 - Gather codebase facts via direct file read/search tools before asking the user about internals
 - Reduce user effort: ask only the highest-leverage unresolved question; never ask the user for codebase facts that can be discovered directly
 - For brownfield work, prefer evidence-backed confirmation questions: "I found X in Y. Should this change follow that pattern?"
+- Route facts before judgment: classify missing information as a discoverable fact, a fact needing confirmation, or a human decision before asking a user-facing question.
+- Use code/research evidence for descriptive facts when confidence is high, and record them in the transcript as discovered context rather than spending an interview round.
+- Ask the user for goals, preferences, business logic, non-goals, acceptance criteria, scope boundaries, and tradeoffs. Do not auto-confirm anything that implies what the feature should do.
 - Use AskUserQuestion for each interview round when available; if unavailable, create a structured question record with `scripts/oh-my-openclaw-question.py ask ...`, let required questions mint a linked question obligation automatically, then ask the same single question in plain chat with the question id attached
 - If a question is launched in a background terminal/session, wait for that session to finish and read the structured answer before scoring ambiguity, asking another round, or handing off
 - Always run preflight context intake before the first interview question; if the initial context is oversized, first ask for or create a prompt-safe summary and block ambiguity scoring/handoff until it is recorded
