@@ -15,7 +15,7 @@ Use when the user asks for `ultragoal`, durable multi-goal planning, sequential 
 
 - OpenClaw owns durable state and evidence under `.oh-my-openclaw/goals/ultragoal/`.
 - The default plan shape is aggregate: one whole-run objective in `goals.json`, with per-story progress tracked by OpenClaw artifacts and ledger events.
-- Subagents may execute individual goals, but Hina/the leader owns reconciliation and final judgment.
+- Subagents may execute individual goals, but the leader owns reconciliation and final judgment.
 - Completion requires fresh artifact/test/review evidence, not assistant prose or shell-only optimism.
 
 ## Artifacts
