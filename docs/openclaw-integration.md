@@ -108,3 +108,111 @@ If you want the migration to feel real, align team execution with OpenClaw's off
 - hooks = auxiliary glue
 
 See `docs/openclaw-official-alignment.md` and `docs/team-operating-model.md`.
+
+## Raw OMX Notification Bridge
+
+Upstream OMX also documents an OpenClaw / generic notification gateway path for raw `omx` CLI sessions. Treat that as a legacy/raw OMX bridge, not as the primary Oh My OpenClaw runtime.
+
+Use it only when a real upstream OMX session should emit hook events into an OpenClaw or Clawdbot surface.
+
+Activation gates:
+
+- `HOOKS_TOKEN`: bearer token for OpenClaw hook endpoints; keep it in env, not hardcoded JSON
+- `OMX_OPENCLAW=1`: required for OpenClaw-backed OMX dispatch
+- `OMX_OPENCLAW_COMMAND=1`: required in addition for command gateways
+- `OMX_OPENCLAW_COMMAND_TIMEOUT_MS=120000`: optional global command timeout; gateway timeout wins over env, env wins over the 5000ms default
+
+Config precedence:
+
+1. `notifications.openclaw` wins
+2. `custom_webhook_command` / `custom_cli_command` are ignored
+3. raw OMX should warn so behavior stays deterministic
+
+For hook-driven agent turns, keep instructions structured and parseable:
+
+    [session-end|exec]
+    project={{projectName}} session={{sessionId}} tmux={{tmuxSession}} reason={{reason}}
+    성과: 완료 결과 1~2문장
+    검증: 확인/테스트 결과
+    다음: 후속 액션 1~2개
+
+Useful tokens:
+
+- `{{sessionId}}` for cross-log traceability
+- `{{tmuxSession}}` when the event came from an OMX tmux session
+- `{{projectName}}`
+- `{{question}}` for `ask-user-question`
+- `{{reason}}` for `session-end`
+
+OpenClaw HTTP gateway shape:
+
+    {
+      "notifications": {
+        "enabled": true,
+        "openclaw": {
+          "enabled": true,
+          "gateways": {
+            "local": {
+              "type": "http",
+              "url": "https://OPENCLAW_GATEWAY_HOST/hooks/agent",
+              "headers": {
+                "Authorization": "Bearer ${HOOKS_TOKEN}"
+              }
+            }
+          },
+          "hooks": {
+            "session-end": {
+              "enabled": true,
+              "gateway": "local",
+              "instruction": "[session-end|exec]\nproject={{projectName}} session={{sessionId}} tmux={{tmuxSession}} reason={{reason}}\n성과: 완료 결과\n검증: 확인 결과\n다음: 후속 액션"
+            },
+            "ask-user-question": {
+              "enabled": true,
+              "gateway": "local",
+              "instruction": "[ask-user-question|exec]\nsession={{sessionId}} tmux={{tmuxSession}} question={{question}}\n핵심질문: 필요한 답변\n영향: 미응답 시 영향\n권장응답: 가장 빠른 답변 형태"
+            }
+          }
+        }
+      }
+    }
+
+Command gateways are useful when the hook should trigger an agent turn rather than a plain webhook post.
+
+Operational rules:
+
+- keep templates simple; command templates interpolate `{{instruction}}`
+- set gateway timeout to `120000` for agent-turn delivery
+- append `|| true` so hook delivery failure does not block the raw OMX session
+- append to `.jsonl` logs for auditability
+- use concrete channel ids or platform-native stable targets instead of fragile aliases
+
+Wake smoke:
+
+    curl -sS -X POST https://OPENCLAW_GATEWAY_HOST/hooks/wake \
+      -H "Authorization: Bearer ${HOOKS_TOKEN}" \
+      -H "Content-Type: application/json" \
+      -d '{"text":"OMX wake smoke test","mode":"now"}'
+
+Delivery smoke:
+
+    curl -sS -o /tmp/omx-openclaw-agent-check.json -w "HTTP %{http_code}\n" \
+      -X POST https://OPENCLAW_GATEWAY_HOST/hooks/agent \
+      -H "Authorization: Bearer ${HOOKS_TOKEN}" \
+      -H "Content-Type: application/json" \
+      -d '{"message":"OMX delivery verification","instruction":"OMX delivery verification","event":"session-end","sessionId":"manual-check"}'
+
+Pass signals:
+
+- `/hooks/wake` returns JSON with `ok: true`
+- `/hooks/agent` returns HTTP 2xx with an accepted response body
+
+Failure hints:
+
+- `401/403`: missing or invalid bearer token
+- `404`: wrong hook path
+- `5xx`: gateway/runtime issue
+- timeout or connection refused: gateway, host, port, or firewall issue
+- command gateway disabled: check `OMX_OPENCLAW=1` and `OMX_OPENCLAW_COMMAND=1`
+- command killed by `SIGTERM`: raise the gateway timeout
+
+This bridge does not replace the OpenClaw Codex harness. It is for upstream OMX hook events. The normal Oh My OpenClaw workflow remains channel message -> OpenClaw -> Codex harness turn -> `.oh-my-openclaw/` workflow state -> OpenClaw subagents/sessions/tasks.
